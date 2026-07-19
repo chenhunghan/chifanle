@@ -72,6 +72,16 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 .vcard .py{display:block;}
 .vcard .id-text{font-size:13px;}
 
+/* communication cards (指著用,可裁剪) */
+.comm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;}
+.comm-card{border:2px solid var(--mint);border-radius:14px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--mint-pale);}
+.comm-card .emoji{font-size:52px;line-height:1.1;}
+.comm-card .zh{font-size:34px;font-weight:900;margin-top:6px;color:var(--mint-deep);line-height:1.15;}
+.comm-card .q{font-size:17px;color:var(--mint);margin-top:4px;font-weight:700;}
+.comm-card .py{font-size:13px;color:var(--sub);margin-top:6px;}
+.comm-card .id{font-size:18px;font-style:italic;color:var(--mint);margin-top:2px;font-weight:500;}
+.comm-card .cut-line{margin-top:auto;padding-top:8px;width:100%;border-top:1.5px dashed var(--line);font-size:9px;color:var(--sub);letter-spacing:.05em;}
+
 /* shopping list */
 .shop li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--line);font-size:14.5px;list-style:none;}
 .shop .box{flex:none;width:16px;height:16px;border:2px solid var(--mint);border-radius:3px;margin-top:3px;}
@@ -155,6 +165,12 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .vcard .zh{font-size:17px;}
   .vcard .id-text{font-size:12px;}
 
+  /* 溝通小卡:手機改 1 欄,卡片放大好指 */
+  .comm-grid{grid-template-columns:1fr;gap:10px;}
+  .comm-card{padding:14px 12px;}
+  .comm-card .emoji{font-size:60px;}
+  .comm-card .zh{font-size:38px;}
+
   .foot{flex-wrap:wrap;gap:4px;}
 }
 
@@ -180,32 +196,46 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .main{padding:0;gap:0;display:block;}
   .page{box-shadow:none;width:210mm;height:296mm;page-break-after:always;overflow:hidden;}
 
-  /* 常用中文頁(3 張):42 張詞卡擠進 A4 → 4 欄 + 緊湊卡片(拼音/印尼文同行) */
+  /* 常用中文頁(3 張):詞卡擠進 A4 → 4 欄 + 緊湊卡片(拼音/印尼文同行) */
   .vocab-page .vocab{grid-template-columns:repeat(4,1fr);gap:3px;}
-  .vocab-page .vcard{padding:2px 5px;border-width:1px;line-height:1.2;}
-  .vocab-page .vcard .zh{font-size:14px;}
-  .vocab-page .vcard .py{display:inline;font-size:8.5px;letter-spacing:0;}
+  .vocab-page .vcard{padding:3px 6px;border-width:1px;line-height:1.25;}
+  .vocab-page .vcard .zh{font-size:16px;}
+  .vocab-page .vcard .py{display:inline;font-size:10px;letter-spacing:0;}
   .vocab-page .vcard .py::after{content:' ';}
-  .vocab-page .vcard .id-text{display:inline;font-size:9.5px;}
-  .vocab-page .sec-t,.vocab-page .note{font-size:11px;}
-  .vocab-page .note{padding:6px 10px;margin-top:8px !important;}
-  .vocab-page .pg-head{padding-bottom:6px;margin-bottom:8px;}
-  .vocab-page .pg-head .zh{font-size:24px;}
-  .vocab-page .pg-head .sub{font-size:11px;}
+  .vocab-page .vcard .id-text{display:inline;font-size:11.5px;}
+  .vocab-page .sec-t,.vocab-page .note{font-size:12.5px;}
+  .vocab-page .note{padding:7px 11px;margin-top:10px !important;line-height:1.5;}
+  .vocab-page .pg-head{padding-bottom:7px;margin-bottom:10px;}
+  .vocab-page .pg-head .zh{font-size:28px;}
+  .vocab-page .pg-head .sub{font-size:12.5px;}
 
-  /* 食譜頁微縮,確保邊緣頁(如滷肉)塞進 A4 */
-  .page .note{padding:7px 11px;font-size:11.5px;line-height:1.45;}
-  .page .steps li{padding:6px 0;}
-  .page .steps .zh{font-size:15px;}
-  .page .steps .id-text{font-size:12.5px;}
-  table.ing{font-size:13px;}
-  table.ing td{padding:3px 4px;}
+  /* 食譜頁放大字型(更好讀);滷肉頁食材多,食材表維持小字避免溢出 */
+  .page .pg-head .zh{font-size:34px;}
+  .page .pg-head .sub{font-size:15px;}
+  .page .sec-t{font-size:17px;margin:14px 0 8px;}
+  .page .note{padding:8px 12px;font-size:13.5px;line-height:1.5;}
+  .page .steps li{padding:7px 0;}
+  .page .steps .zh{font-size:17px;line-height:1.5;}
+  .page .steps .id-text{font-size:14.5px;line-height:1.45;}
+  table.ing{font-size:14px;}
+  table.ing td{padding:4px 5px;}
+  /* 滷肉頁特例:8 樣食材,放大後會溢出 → 食材表與 padding 維持精簡 */
+  #pg-luro table.ing{font-size:13px;}
+  #pg-luro table.ing td{padding:3px 4px;}
 
   /* 採購清單頁:允許跨頁(內容動態,不固定高度) */
   #pg-shop{height:auto;min-height:296mm;overflow:visible;}
   #pg-shop .shop li{padding:4px 0;font-size:12.5px;}
   #pg-shop .shop .who{font-size:11px;}
   #pg-shop .aisle{margin:8px 0 3px;font-size:12px;}
+
+  /* 溝通小卡列印:黑白最佳化,邊框加粗,裁切線明顯 */
+  .comm-page .comm-card{border:2.5px solid #000;background:#fff;}
+  .comm-page .comm-card .zh{color:#000;font-size:32px;}
+  .comm-page .comm-card .q{color:#000;}
+  .comm-page .comm-card .id{color:#333;}
+  .comm-page .comm-card .py{color:#555;}
+  .comm-page .comm-card .cut-line{border-top:1.5px dashed #555;color:#555;}
 
   .page.hidden{display:none !important;}
 }
@@ -642,6 +672,73 @@ const VOCAB={
  ],
 };
 
+/* ================= COMMUNICATION CARDS (指著用,可裁剪) ================= */
+/* 每卡:emoji / 主詞(zh) / 提問(q,雙向用) / 拼音(py) / 印尼文(id) */
+const COMM=[
+ /* 第 1 頁:食(吃飯喝水) */
+ [
+  {e:'💧',zh:'水',q:'要喝水嗎?',py:'shuǐ',id:'minum'},
+  {e:'🍚',zh:'餓了',q:'要吃飯嗎?',py:'è',id:'lapar'},
+  {e:'😊',zh:'吃飽了',q:'吃飽了嗎?',py:'chī bǎo le',id:'kenyang'},
+  {e:'🔁',zh:'還要',q:'再來一份?',py:'hái yào',id:'tambah'},
+  {e:'🚫',zh:'不要了',q:'吃夠了嗎?',py:'bú yào',id:'cukup'},
+  {e:'💊',zh:'該吃藥了',q:'吃藥時間到',py:'chī yào',id:'minum obat'},
+ ],
+ /* 第 2 頁:衣與身體舒適 */
+ [
+  {e:'🥶',zh:'會冷',q:'加件衣服?',py:'huì lěng',id:'dingin'},
+  {e:'🥵',zh:'會熱',q:'冷氣開強一點?',py:'huì rè',id:'panas'},
+  {e:'👕',zh:'換衣服',q:'該換衣服了',py:'huàn yī fu',id:'ganti baju'},
+  {e:'🧻',zh:'換尿布',q:'尿布濕了嗎?',py:'huàn niào bù',id:'ganti pampers'},
+  {e:'🛏️',zh:'棉被',q:'要蓋被嗎?',py:'mián bèi',id:'selimut'},
+  {e:'🧥',zh:'穿外套',q:'穿件外套',py:'wài tào',id:'jaket'},
+ ],
+ /* 第 3 頁:住(廁所洗澡睡覺) */
+ [
+  {e:'🚽',zh:'上廁所',q:'要去廁所嗎?',py:'shàng cè suǒ',id:'ke toilet'},
+  {e:'💩',zh:'大便',q:'要大便嗎?',py:'dà biàn',id:'buang air besar'},
+  {e:'💦',zh:'小便',q:'要小便嗎?',py:'xiǎo biàn',id:'buang air kecil'},
+  {e:'🛁',zh:'洗澡',q:'該洗澡了',py:'xǐ zǎo',id:'mandi'},
+  {e:'😴',zh:'睡覺',q:'該睡了',py:'shuì jiào',id:'tidur'},
+  {e:'🌅',zh:'起床',q:'該起床了',py:'qǐ chuáng',id:'bangun'},
+ ],
+ /* 第 4 頁:行(活動外出) */
+ [
+  {e:'🚶',zh:'散步',q:'去走走?',py:'sàn bù',id:'jalan-jalan'},
+  {e:'🚪',zh:'出去',q:'要出門嗎?',py:'chū qù',id:'keluar'},
+  {e:'🏠',zh:'回家',q:'要回家了',py:'huí jiā',id:'pulang'},
+  {e:'🪑',zh:'坐下',q:'坐一下',py:'zuò xià',id:'duduk'},
+  {e:'🛋️',zh:'躺下',q:'躺一下',py:'tǎng xià',id:'tiduran'},
+  {e:'⏳',zh:'等一下',q:'慢慢來',py:'děng yí xià',id:'tunggu'},
+ ],
+ /* 第 5 頁:身體狀況(不適表達) */
+ [
+  {e:'😣',zh:'痛',q:'哪裡痛?',py:'tòng',id:'sakit'},
+  {e:'😵',zh:'頭暈',q:'會頭暈嗎?',py:'tóu yūn',id:'pusing'},
+  {e:'🤒',zh:'發燒',q:'量一下體溫',py:'fā shāo',id:'demam'},
+  {e:'💓',zh:'胸悶',q:'喘不過氣?',py:'xiōng mèn',id:'sesak napas'},
+  {e:'🤕',zh:'跌倒了',q:'有受傷嗎?',py:'diē dǎo le',id:'jatuh'},
+  {e:'🚑',zh:'叫救護車',q:'打 119',py:'jiù hù chē',id:'ambulans (telepon 119)'},
+ ],
+ /* 第 6 頁:身體狀況(就醫吃藥) */
+ [
+  {e:'👨‍⚕️',zh:'看醫生',q:'該看醫生了',py:'kàn yī shēng',id:'ke dokter'},
+  {e:'🏥',zh:'醫院',q:'要去醫院嗎?',py:'yī yuàn',id:'rumah sakit'},
+  {e:'💊',zh:'吃藥',q:'吃藥時間到',py:'chī yào',id:'minum obat'},
+  {e:'📞',zh:'打電話',q:'打給家人?',py:'dǎ diàn huà',id:'telepon keluarga'},
+  {e:'❓',zh:'不舒服',q:'哪裡不舒服?',py:'bù shū fu',id:'tidak enak badan'},
+  {e:'🩺',zh:'量血壓',q:'量一下血壓',py:'liáng xuè yā',id:'cek tekanan darah'},
+ ],
+];
+const COMM_TITLES=[
+ {zh:'溝通小卡 ① 吃飯・喝水',id:'Kartu Komunikasi (1): Makan & Minum',hint:'指給對方看 / Tunjuk ke lawan bicara'},
+ {zh:'溝通小卡 ② 衣服・冷暖',id:'Kartu Komunikasi (2): Pakaian & Suhu',hint:'指給對方看 / Tunjuk ke lawan bicara'},
+ {zh:'溝通小卡 ③ 上廁所・洗澡・睡覺',id:'Kartu Komunikasi (3): Toilet, Mandi, Tidur',hint:'指給對方看 / Tunjuk ke lawan bicara'},
+ {zh:'溝通小卡 ④ 活動・外出',id:'Kartu Komunikasi (4): Aktivitas & Keluar',hint:'指給對方看 / Tunjuk ke lawan bicara'},
+ {zh:'溝通小卡 ⑤ 身體不舒服',id:'Kartu Komunikasi (5): Tubuh Tidak Enak',hint:'指給對方看 / Tunjuk ke lawan bicara'},
+ {zh:'溝通小卡 ⑥ 看醫生・吃藥',id:'Kartu Komunikasi (6): Dokter & Obat',hint:'指給對方看 / Tunjuk ke lawan bicara'},
+];
+
 function basicPages(){
 return `
 <!-- 電鍋教學 -->
@@ -705,6 +802,24 @@ return `
   <span class="id-text">Telepon darurat: 119 = ambulans & pemadam kebakaran. Jika Anda sendiri sakit, beri tahu majikan.</span></div>
   <div class="foot"><span>家庭幫傭上工手冊</span><span>常用中文 ③ 時間數字緊急</span></div>
 </section>
+
+<!-- 溝通小卡 ① ~ ⑥ -->
+${COMM.map((cards,i)=>`
+<section class="page comm-page" id="pg-comm${i+1}" data-nav="basic" data-zh="${COMM_TITLES[i].zh}" data-id="${COMM_TITLES[i].id}">
+  <div class="pg-head"><div><div class="zh">${COMM_TITLES[i].zh}</div>
+  <div class="sub"><span class="id-text">${COMM_TITLES[i].id}</span> · ${COMM_TITLES[i].hint}</div></div></div>
+  <div class="comm-grid">${cards.map(c=>`
+    <div class="comm-card">
+      <div class="emoji">${c.e}</div>
+      <div class="zh">${c.zh}</div>
+      <div class="q">${c.q}</div>
+      <div class="py">${c.py}</div>
+      <div class="id">${c.id}</div>
+      <div class="cut-line">✂ ─ ─ ─ ─ 沿虛線剪下 / gunting di sini ─ ─ ─</div>
+    </div>`).join('')}
+  </div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>${COMM_TITLES[i].zh}</span></div>
+</section>`).join('')}
 
 <!-- 採購清單 -->
 <section class="page" id="pg-shop" data-nav="basic" data-zh="全聯採購清單" data-id="Daftar Belanja PX Mart">
