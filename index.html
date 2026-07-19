@@ -180,18 +180,18 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .main{padding:0;gap:0;display:block;}
   .page{box-shadow:none;width:210mm;height:296mm;page-break-after:always;overflow:hidden;}
 
-  /* 常用中文頁:42 張詞卡擠進 A4 → 4 欄 + 緊湊卡片(拼音/印尼文同行) */
-  #pg-vocab .vocab{grid-template-columns:repeat(4,1fr);gap:3px;}
-  #pg-vocab .vcard{padding:2px 5px;border-width:1px;line-height:1.2;}
-  #pg-vocab .vcard .zh{font-size:14px;}
-  #pg-vocab .vcard .py{display:inline;font-size:8.5px;letter-spacing:0;}
-  #pg-vocab .vcard .py::after{content:' ';}
-  #pg-vocab .vcard .id-text{display:inline;font-size:9.5px;}
-  #pg-vocab .sec-t,#pg-vocab .note{font-size:11px;}
-  #pg-vocab .note{padding:6px 10px;margin-top:8px !important;}
-  #pg-vocab .pg-head{padding-bottom:6px;margin-bottom:8px;}
-  #pg-vocab .pg-head .zh{font-size:24px;}
-  #pg-vocab .pg-head .sub{font-size:11px;}
+  /* 常用中文頁(3 張):42 張詞卡擠進 A4 → 4 欄 + 緊湊卡片(拼音/印尼文同行) */
+  .vocab-page .vocab{grid-template-columns:repeat(4,1fr);gap:3px;}
+  .vocab-page .vcard{padding:2px 5px;border-width:1px;line-height:1.2;}
+  .vocab-page .vcard .zh{font-size:14px;}
+  .vocab-page .vcard .py{display:inline;font-size:8.5px;letter-spacing:0;}
+  .vocab-page .vcard .py::after{content:' ';}
+  .vocab-page .vcard .id-text{display:inline;font-size:9.5px;}
+  .vocab-page .sec-t,.vocab-page .note{font-size:11px;}
+  .vocab-page .note{padding:6px 10px;margin-top:8px !important;}
+  .vocab-page .pg-head{padding-bottom:6px;margin-bottom:8px;}
+  .vocab-page .pg-head .zh{font-size:24px;}
+  .vocab-page .pg-head .sub{font-size:11px;}
 
   /* 食譜頁微縮,確保邊緣頁(如滷肉)塞進 A4 */
   .page .note{padding:7px 11px;font-size:11.5px;line-height:1.45;}
@@ -540,7 +540,9 @@ function recipePage(r){
   </section>`;
 }
 
-const VOCAB=[
+const VOCAB={
+ /* ① 生活溝通(原有 42 詞) */
+ daily:[
  ['你好','nǐ hǎo','halo'],['謝謝','xiè xie','terima kasih'],['早安','zǎo ān','selamat pagi'],
  ['吃飯了','chī fàn le','waktunya makan'],['好吃嗎?','hǎo chī ma','enak tidak?'],['喝水','hē shuǐ','minum air'],
  ['吃藥','chī yào','minum obat'],['餓不餓?','è bú è','lapar tidak?'],['口渴嗎?','kǒu kě ma','haus tidak?'],
@@ -555,7 +557,35 @@ const VOCAB=[
  ['鹽','yán','garam'],['糖','táng','gula'],['醬油','jiàng yóu','kecap asin'],
  ['洗','xǐ','cuci'],['切','qiē','potong'],['蒸','zhēng','kukus'],
  ['煮','zhǔ','rebus / masak'],['電鍋','diàn guō','penanak nasi'],['冰箱','bīng xiāng','kulkas'],
-];
+ ],
+ /* ② 家事與環境 */
+ house:[
+ ['洗衣服','xǐ yī fu','cuci baju'],['曬衣服','shài yī fu','jemur baju'],['收衣服','shōu yī fu','lipat baju (masuk)'],['摺衣服','zhé yī fu','lipat baju'],
+ ['洗衣機','xǐ yī jī','mesin cuci'],['洗衣粉','xǐ yī fěn','deterjen'],['曬衣架','shài yī jià','gantungan jemur'],['衣架','yī jià','gantungan baju'],
+ ['拖地','tuō dì','pel lantai'],['掃地','sǎo dì','sapu lantai'],['倒垃圾','dào lā jī','buang sampah'],['垃圾車','lā jī chē','truk sampah'],
+ ['資源回收','zī yuán huí shōu','daur ulang'],['擦桌子','cā zhuō zi','lap meja'],['擦窗戶','cā chuāng hu','lap jendela'],['抹布','mā bù','kain lap'],
+ ['拖把','tuō bǎ','kemoceng (alat pel)'],['掃把','sǎo bǎ','sapu'],['垃圾桶','lā jī tǒng','tempat sampah'],
+ ['關燈','guān dēng','matikan lampu'],['開燈','kāi dēng','nyalakan lampu'],['關門','guān mén','tutup pintu'],['開門','kāi mén','buka pintu'],
+ ['關冷氣','guān lěng qì','matikan AC'],['開冷氣','kāi lěng qì','nyalakan AC'],['電風扇','diàn fēng shàn','kipas angin'],
+ ['馬桶','mǎ tǒng','kloset'],['水龍頭','shuǐ lóng tóu','keran air'],['熱水','rè shuǐ','air panas'],['冷水','lěng shuǐ','air dingin'],['肥皂','féi zào','sabun'],
+ ['客廳','kè tīng','ruang tamu'],['臥室','wò shì','kamar tidur'],['廚房','chú fáng','dapur'],['浴室','yù shì','kamar mandi'],['陽台','yáng tái','balkon'],
+ ['樓上','lóu shàng','naik (lantai atas)'],['樓下','lóu xià','turun (lantai bawah)'],['放哪裡?','fàng nǎ lǐ','taruh di mana?'],['收起來','shōu qǐ lái','simpan'],['在這裡','zài zhè lǐ','di sini'],
+ ],
+ /* ③ 時間・數字・緊急 */
+ time:[
+ ['今天','jīn tiān','hari ini'],['明天','míng tiān','besok'],['昨天','zuó tiān','kemarin'],
+ ['早上','zǎo shàng','pagi'],['中午','zhōng wǔ','siang'],['下午','xià wǔ','sore'],['晚上','wǎn shàng','malam'],['現在幾點?','xiàn zài jǐ diǎn','jam berapa sekarang?'],
+ ['星期一','xīng qī yī','Senin'],['星期二','xīng qī èr','Selasa'],['星期三','xīng qī sān','Rabu'],['星期四','xīng qī sì','Kamis'],
+ ['星期五','xīng qī wǔ','Jumat'],['星期六','xīng qī liù','Sabtu'],['星期日','xīng qī rì','Minggu'],
+ ['一','yī','satu'],['二','èr','dua'],['三','sān','tiga'],['四','sì','empat'],['五','wǔ','lima'],
+ ['六','liù','enam'],['七','qī','tujuh'],['八','bā','delapan'],['九','jiǔ','sembilan'],['十','shí','sepuluh'],
+ ['多少錢?','duō shǎo qián','berapa harganya?'],['便宜','pián yi','murah'],['太貴了','tài guì le','terlalu mahal'],
+ ['這個是什麼?','zhè ge shì shén me','ini apa?'],['要買這個','yào mǎi zhè ge','mau beli ini'],
+ ['叫救護車','jiào jiù hù chē','panggil ambulans'],['打 119','dǎ yī yī jiǔ','telepon 119'],['打電話','dǎ diàn huà','telepon'],
+ ['走失了','zǒu shī le','hilang / tersesat'],['救命','jiù mìng','tolong!'],['我不舒服','wǒ bù shū fu','saya tidak enak badan'],
+ ['頭暈','tóu yūn','pusing'],['發燒','fā shāo','demam'],['跌倒了','diē dǎo le','jatuh'],['流血','liú xiuě','berdarah'],['地址','dì zhǐ','alamat'],['警察','jǐng chá','polisi'],
+ ],
+};
 
 function basicPages(){
 return `
@@ -593,14 +623,32 @@ return `
   <div class="foot"><span>家庭幫傭上工手冊</span><span>大同電鍋教學</span></div>
 </section>
 
-<!-- 常用中文 -->
-<section class="page" id="pg-vocab" data-nav="basic" data-zh="常用中文" data-id="Kosakata Sehari-hari">
-  <div class="pg-head"><div><div class="zh">常用中文</div>
-  <div class="sub"><span class="id-text">Kosakata Sehari-hari: bicara dengan kakek-nenek & di dapur</span> · 每天學 3 個 / belajar 3 kata sehari</div></div></div>
-  <div class="vocab">${VOCAB.map(([zh,py,id])=>`<div class="vcard"><span class="zh">${zh}</span><span class="py">${py}</span><span class="id-text">${id}</span></div>`).join('')}</div>
+<!-- 常用中文 ① 生活溝通 -->
+<section class="page vocab-page" id="pg-vocab1" data-nav="basic" data-zh="常用中文 ① 生活溝通" data-id="Kosakata Sehari-hari (1)">
+  <div class="pg-head"><div><div class="zh">常用中文 ① 生活溝通</div>
+  <div class="sub"><span class="id-text">Kosakata Sehari-hari (1): bicara dengan kakek-nenek & di dapur</span> · 每天學 3 個 / belajar 3 kata sehari</div></div></div>
+  <div class="vocab">${VOCAB.daily.map(([zh,py,id])=>`<div class="vcard"><span class="zh">${zh}</span><span class="py">${py}</span><span class="id-text">${id}</span></div>`).join('')}</div>
   <div class="note" style="margin-top:14px"><b>拼音怎麼念:</b>拼音用英文字母,照印尼文的讀法唸,聲調(á ǎ à)先不用管,慢慢學。<br>
   <span class="id-text">Pinyin dibaca seperti ejaan Indonesia. Tanda nada (á ǎ à) bisa dipelajari pelan-pelan.</span></div>
-  <div class="foot"><span>家庭幫傭上工手冊</span><span>常用中文 Kosakata</span></div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>常用中文 ① 生活溝通</span></div>
+</section>
+
+<!-- 常用中文 ② 家事與環境 -->
+<section class="page vocab-page" id="pg-vocab2" data-nav="basic" data-zh="常用中文 ② 家事與環境" data-id="Kosakata Sehari-hari (2)">
+  <div class="pg-head"><div><div class="zh">常用中文 ② 家事與環境</div>
+  <div class="sub"><span class="id-text">Kosakata Sehari-hari (2): pekerjaan rumah & ruangan</span></div></div></div>
+  <div class="vocab">${VOCAB.house.map(([zh,py,id])=>`<div class="vcard"><span class="zh">${zh}</span><span class="py">${py}</span><span class="id-text">${id}</span></div>`).join('')}</div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>常用中文 ② 家事與環境</span></div>
+</section>
+
+<!-- 常用中文 ③ 時間・數字・緊急 -->
+<section class="page vocab-page" id="pg-vocab3" data-nav="basic" data-zh="常用中文 ③ 時間數字緊急" data-id="Kosakata Sehari-hari (3)">
+  <div class="pg-head"><div><div class="zh">常用中文 ③ 時間・數字・緊急</div>
+  <div class="sub"><span class="id-text">Kosakata Sehari-hari (3): waktu, angka & darurat</span></div></div></div>
+  <div class="vocab">${VOCAB.time.map(([zh,py,id])=>`<div class="vcard"><span class="zh">${zh}</span><span class="py">${py}</span><span class="id-text">${id}</span></div>`).join('')}</div>
+  <div class="note" style="margin-top:14px"><b>緊急電話:</b>119 是救護車跟火警。幫傭如果自己不舒服,也要告訴雇主。<br>
+  <span class="id-text">Telepon darurat: 119 = ambulans & pemadam kebakaran. Jika Anda sendiri sakit, beri tahu majikan.</span></div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>常用中文 ③ 時間數字緊急</span></div>
 </section>
 
 <!-- 採購清單 -->
