@@ -281,6 +281,12 @@ const ING = {
   salt:{zh:'鹽',py:'yán',id:'garam',aisle:'乾貨'},
   sugar:{zh:'糖',py:'táng',id:'gula',aisle:'乾貨'},
   oil:{zh:'橄欖油(或芥花油)',py:'gǎn lǎn yóu',id:'minyak zaitun (atau minyak kanola)',aisle:'乾貨'},
+  cucumber:{zh:'小黃瓜',py:'xiǎo huáng guā',id:'mentimun',aisle:'蔬菜'},
+  vinegar:{zh:'醋',py:'cù',id:'cuka',aisle:'乾貨'},
+  yam:{zh:'山藥',py:'shān yào',id:'ubi Cina / yam',aisle:'生鮮(冷藏)'},
+  brownshroom:{zh:'鴻喜菇(盒裝)',py:'hóng xǐ gū',id:'jamur hongxi (bunapi-shimeji)',aisle:'蔬菜'},
+  preservedbean:{zh:'破布子(罐頭)',py:'pò bù zǐ',id:'po bu zi (buah asin fermentasi, kaleng)',aisle:'乾貨'},
+  dumpling:{zh:'冷凍豬肉水餃 ⚠️豬肉',py:'shuǐ jiǎo',id:'⚠️ pangsit BABI beku',aisle:'生鮮(冷藏)'},
 };
 
 /* ================= RECIPES ================= */
@@ -510,6 +516,55 @@ const RECIPES = [
   ['按下開關,等開關跳起來,再悶 10 分鐘。','Tekan tombol. Tunggu tombol naik, diamkan 10 menit.'],
   ['打開用飯匙鬆飯。','Buka dan aduk nasi dengan sendok nasi.']],
  note:null},
+
+/* ---- 新增青菜・主食 ---- */
+{key:'cucumbersalad', zh:'涼拌小黃瓜', py:'liáng bàn xiǎo huáng guā', id:'Mentimun Segar Acar', cups:0, tags:[],
+ ings:[['cucumber','2 條 / 2 buah'],['garlic','2 瓣切末'],['vinegar','1 大匙'],['salt','1 小匙'],['sugar','半小匙']],
+ steps:[
+  ['小黃瓜洗淨,放在砧板上用刀背拍碎,再切成小段。','Cuci mentimun, hancurkan dengan punggung pisau, potong kecil.'],
+  ['撒鹽拌一下,放 5 分鐘讓它出水,把水倒掉。','Taburi garam, aduk, diamkan 5 menit, buang airnya.'],
+  ['加蒜末、醋、糖拌勻。','Tambah bawang putih cincang, cuka, gula. Aduk rata.'],
+  ['放冰箱 15 分鐘更好吃。','Lebih enak didinginkan 15 menit.']],
+ note:['夏天最開胃,不用開火。醋幫助消化。冰過更好吃。','Paling cocok di musim panas, tidak perlu masak. Cuka membantu pencernaan.']},
+
+{key:'yam', zh:'蒸山藥', py:'zhēng shān yào', id:'Yam / Ubi Cina Kukus', cups:1, tags:[],
+ ings:[['yam','1 段 (約300g) / 1 potong'],['soy','1 大匙'],['scallion','蔥花少許']],
+ steps:[
+  ['山藥去皮(手會癢,可以戴手套或洗乾淨再削)。','Kupas yam (bisa gatal, pakai sarung tangan atau cuci tangan setelahnya).'],
+  ['切成 0.5 公分薄片。','Iris tipis 0,5 cm.'],
+  ['排在盤子上,外鍋 1 杯水,蒸到跳起來(約 15 分鐘)。','Tata di piring. Panci luar 1 gelas air, kukus sampai tombol naik (sekitar 15 menit).'],
+  ['淋醬油,撒蔥花。','Siram kecap asin, taburi daun bawang.']],
+ note:['山藥很營養、高纖維、顧胃。蒸過很軟,老人好吞,有天然黏液。','Yam sangat bergizi, tinggi serat, baik untuk lambung. Setelah dikukus sangat lembut dan mudah ditelan.']},
+
+{key:'brownshroom', zh:'水煮鴻喜菇', py:'shuǐ zhǔ hóng xǐ gū', id:'Jamur Hongxi Rebus', cups:0, tags:[],
+ ings:[['brownshroom','1 盒 (約150g) / 1 kotak'],['soy','1 大匙'],['garlic','2 瓣切末'],['scallion','蔥花少許']],
+ steps:[
+  ['鴻喜菇切掉根部,用手剝散,洗一下瀝乾。','Potong akar jamur, sobek dengan tangan, cuci dan tiriskan.'],
+  ['煮一鍋水,水滾放入鴻喜菇,煮 3 分鐘。','Rebus air. Setelah mendidih, masukkan jamur, rebus 3 menit.'],
+  ['撈起來瀝乾水,放在碗裡。','Angkat dan tiriskan, taruh di mangkuk.'],
+  ['淋醬油,撒蒜末和蔥花,拌一拌。','Siram kecap asin, taburi bawang putih cincang dan daun bawang. Aduk.']],
+ note:['菇本身有鮮味,不用加鹽就很甜。零油、低卡、高纖維,老人也很好咬。','Jamur sudah gurih sendiri, tidak perlu garam. Tanpa minyak, rendah kalori, tinggi serat, mudah dikunyah untuk lansia.']},
+
+/* ---- 新增魚・肉・蛋 ---- */
+{key:'fishpreservedbean', zh:'破布子蒸魚', py:'pò bù zǐ zhēng yú', id:'Ikan Kukus Po Bu Zi', cups:1, tags:[],
+ ings:[['anyfish','1 片 (約250g) / 1 potong'],['preservedbean','2 大匙(連汁) / 2 sendok makan (dengan air kaleng)'],['ginger','3 片'],['scallion','1 根']],
+ steps:[
+  ['魚沖水,用紙巾擦乾,放在盤子上。','Bilas ikan, keringkan dengan tisu, taruh di piring.'],
+  ['破布子(連一點汁)鋪在魚上面,放薑片。','Letakkan po bu zi (dengan sedikit air kaleng) di atas ikan, taruh irisan jahe.'],
+  ['外鍋 1 杯水,放入蒸架和盤子,蓋上蓋子,按開關。','Panci luar 1 gelas air. Masukkan rak dan piring. Tutup, tekan tombol.'],
+  ['開關跳起來就好了(約 15 分鐘)。','Selesai saat tombol naik (sekitar 15 menit).'],
+  ['撒蔥絲。','Taburi irisan daun bawang.']],
+ note:['破布子是台灣傳統的鹹醃果實(罐頭),全聯乾貨區有。它本身鹹香甘甜,蒸魚不用再加鹽或醬油。「破布子」印尼文沒有對應詞,拿罐頭給店員看最快。','Po bu zi adalah buah asin fermentasi khas Taiwan (kaleng), ada di rak kaleng PX Mart. Sudah asin dan manis — tidak perlu tambah garam atau kecap. Tidak ada padanan kata di Indonesia, tunjukkan kalengnya ke pegawai toko.']},
+
+{key:'dumpling', zh:'水餃(電鍋蒸)', py:'shuǐ jiǎo', id:'Pangsit Kukus ⚠️', cups:1.5, tags:['pork'],
+ ings:[['dumpling','10 顆 / 10 buah'],['oil','少許(抹盤子防沾) / sedikit (olesan piring)'],['soy','1 大匙(沾的) / untuk cocolan'],['ginger','2 片(可加在盤上去腥)']],
+ steps:[
+  ['水餃不用退冰,直接從冷凍拿出來。','Pangsit tidak perlu dicairkan, langsung dari freezer.'],
+  ['盤子抹一點油(防沾),水餃排上去,每顆留一點縫隙。','Olesi piring dengan sedikit minyak (supaya tidak lengket), tata pangsit dengan jarak.'],
+  ['外鍋 1.5 杯水,放入蒸架和盤子,蓋上蓋子,按開關。','Panci luar 1,5 gelas air. Masukkan rak dan piring. Tutup, tekan tombol.'],
+  ['開關跳起來就好了(約 20–25 分鐘)。','Selesai saat tombol naik (sekitar 20–25 menit).'],
+  ['沾醬油吃。可以配燙青菜就是一餐。','Cocol kecap asin. Bisa ditambah sayur rebus jadi satu kali makan.']],
+ note:['⚠️ 此菜含豬肉,規則跟滷肉一樣:只用紅色標籤的專用鍋具。另外這道菜用冷凍水餃(平常家裡不買冷凍,這是雇主特別允許的)。如果妳不方便煮,告訴雇主就好,沒關係。','⚠️ Mengandung BABI — aturan sama dengan semur: hanya alat masak berlabel MERAH. Selain itu, masakan ini memakai pangsit BEKU (biasanya tidak beli beku, ini kecuali diizinkan majikan). Jika Anda tidak bersedia memasaknya, beri tahu majikan — tidak apa-apa.'],warn:true},
 ];
 
 /* ================= BASIC PAGES ================= */
@@ -708,7 +763,7 @@ const pagesEl=document.getElementById('pages');
 pagesEl.innerHTML=basicPages()+RECIPES.map(recipePage).join('');
 
 const navBasic=document.getElementById('nav-basic');
-const CAT={oatmeal:'nav-bf',danbing:'nav-bf',fish:'nav-animal',shrimp:'nav-animal',beefonion:'nav-animal',greenpepperbeef:'nav-animal',milkfish:'nav-animal',mousepork:'nav-animal',tomatoegg:'nav-animal',carrotegg:'nav-animal',steamegg:'nav-animal',loofah:'nav-animal',clamsoup:'nav-animal',luro:'nav-animal',coldtofu:'nav-plant',braisedtofu:'nav-plant',misosoup:'nav-plant',braiseddougan:'nav-plant',veg:'nav-veg',cabbage:'nav-veg',eggplant:'nav-veg',cauliflower:'nav-veg',rice:'nav-veg'};
+const CAT={oatmeal:'nav-bf',danbing:'nav-bf',fish:'nav-animal',shrimp:'nav-animal',beefonion:'nav-animal',greenpepperbeef:'nav-animal',milkfish:'nav-animal',mousepork:'nav-animal',tomatoegg:'nav-animal',carrotegg:'nav-animal',steamegg:'nav-animal',loofah:'nav-animal',clamsoup:'nav-animal',luro:'nav-animal',fishpreservedbean:'nav-animal',dumpling:'nav-animal',coldtofu:'nav-plant',braisedtofu:'nav-plant',misosoup:'nav-plant',braiseddougan:'nav-plant',veg:'nav-veg',cabbage:'nav-veg',eggplant:'nav-veg',cauliflower:'nav-veg',cucumbersalad:'nav-veg',yam:'nav-veg',brownshroom:'nav-veg',rice:'nav-veg'};
 document.querySelectorAll('.page').forEach(pg=>{
   const label=document.createElement('label');label.className='chk';
   const pork=pg.dataset.pork==='true';
