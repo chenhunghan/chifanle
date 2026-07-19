@@ -96,17 +96,65 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 .watertbl th,.watertbl td{border:1px solid var(--line);padding:6px 8px;text-align:center;}
 .watertbl th{background:var(--mint-pale);font-size:13px;}
 
+/* ---------- Mobile-only chrome (drawer bar + mask). Desktop & print ignore. ---------- */
+.mobile-bar{display:none;}
+.drawer-mask{display:none;}
+
 @media screen and (max-width:900px){
   .app{flex-direction:column;}
-  .sidebar{width:100%;min-width:0;height:auto;position:static;}
-  .main{padding:16px;}
-  .page{width:100%;min-width:0;min-height:0;padding:6mm;overflow-wrap:anywhere;}
-  /* 讓長拉丁字串(拼音/印尼文)在窄螢幕能自動斷行,不撐破容器 */
+
+  /* sticky 頂部 mini bar:漢堡 + 標題 + 列印。永遠可見。 */
+  .mobile-bar{display:flex;position:sticky;top:0;z-index:50;align-items:center;gap:10px;
+    padding:10px 14px;background:var(--mint-deep);color:#EAF2EE;
+    box-shadow:0 2px 8px rgba(0,0,0,.18);}
+  .mobile-bar .menu-btn{flex:none;width:44px;height:44px;border:none;border-radius:10px;
+    background:#2B4C41;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .mobile-bar .title{flex:1;font-size:15px;font-weight:900;line-height:1.25;}
+  .mobile-bar .title small{display:block;font-size:11px;font-weight:400;font-style:italic;color:#9CC4B5;}
+  .mobile-bar .print-btn{flex:none;height:44px;padding:0 14px;border:none;border-radius:10px;
+    background:#7FD6BC;color:var(--mint-deep);font-weight:900;font-size:14px;cursor:pointer;
+    font-family:inherit;display:flex;align-items:center;gap:4px;}
+
+  /* 側欄變抽屜:預設滑出螢幕外,加 .open 才顯示 */
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:86vw;max-width:320px;min-width:0;
+    z-index:60;transform:translateX(-105%);transition:transform .25s ease;
+    box-shadow:4px 0 24px rgba(0,0,0,.25);}
+  .sidebar.open{transform:translateX(0);}
+  .drawer-mask{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .drawer-mask.show{opacity:1;pointer-events:auto;}
+
+  .main{padding:14px;}
+  .page{width:100%;min-width:0;min-height:0;padding:14px;overflow-wrap:anywhere;box-shadow:0 2px 12px rgba(31,61,52,.12);}
   .page *{overflow-wrap:anywhere;}
   table{word-break:break-word;}
   table.ing td.amt{white-space:normal;width:auto;}
-  .vocab{grid-template-columns:1fr 1fr;}
-  .rota th,.rota td{word-break:break-word;}
+
+  /* 觸控目標放大到 ≥44px */
+  .chk{padding:11px 10px;font-size:15px;}
+  .chk input{width:22px;height:22px;flex:none;}
+  .btnrow button{padding:12px 0;font-size:13px;}
+  .printbtn{padding:16px;font-size:17px;}
+  .shop li{padding:9px 0;}
+  .shop .box{width:20px;height:20px;}
+
+  /* 字體比例為手機校準(不影響桌面/列印) */
+  .page .pg-head{padding-bottom:6px;margin-bottom:10px;}
+  .page .pg-head .zh{font-size:22px;}
+  .page .pg-head .sub{font-size:12px;}
+  .sec-t{font-size:14px;margin:10px 0 5px;}
+  .steps .zh{font-size:15px;}
+  .steps li::before{width:24px;height:24px;font-size:13px;}
+  table.ing{font-size:13px;}
+  .note{font-size:12.5px;padding:9px 12px;}
+  .badge{font-size:11px;}
+  .cups{font-size:12px;}
+
+  /* 詞卡:2 欄 + 卡片放鬆 */
+  .vocab{grid-template-columns:1fr 1fr;gap:7px;}
+  .vcard{padding:7px 10px;}
+  .vcard .zh{font-size:17px;}
+  .vcard .id-text{font-size:12px;}
+
   .foot{flex-wrap:wrap;gap:4px;}
 }
 
@@ -128,7 +176,7 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .aisle{background:#fff;color:#000;border:1.5px solid #000;}
   .note.warn{border:2.5px solid #000;}
   .shop .box{border-color:#000;}
-  .sidebar,.screen-only{display:none !important;}
+  .sidebar,.screen-only,.mobile-bar,.drawer-mask{display:none !important;}
   .main{padding:0;gap:0;display:block;}
   .page{box-shadow:none;width:210mm;height:296mm;page-break-after:always;overflow:hidden;}
   .page.hidden{display:none !important;}
@@ -137,6 +185,14 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 </head>
 <body>
 <div class="app">
+
+<!-- ======================= MOBILE TOP BAR (screen-only) ======================= -->
+<div class="mobile-bar screen-only">
+  <button class="menu-btn" id="menuBtn" aria-label="開啟選單">☰</button>
+  <div class="title">幫傭上工手冊<small>Buku Panduan Memasak</small></div>
+  <button class="print-btn" onclick="window.print()">🖨 列印</button>
+</div>
+<div class="drawer-mask screen-only" id="drawerMask"></div>
 
 <!-- ======================= SIDEBAR ======================= -->
 <aside class="sidebar">
@@ -593,6 +649,20 @@ function update(){
   });
   renderShop();
 }
+
+/* mobile drawer toggle (independent of core update logic) */
+(function(){
+  const sidebar=document.querySelector('.sidebar');
+  const mask=document.getElementById('drawerMask');
+  const btn=document.getElementById('menuBtn');
+  if(!sidebar||!mask||!btn)return;
+  function toggle(open){
+    sidebar.classList.toggle('open',open);
+    mask.classList.toggle('show',open);
+  }
+  btn.addEventListener('click',()=>toggle(!sidebar.classList.contains('open')));
+  mask.addEventListener('click',()=>toggle(false));
+})();
 
 /* shopping list aggregation */
 function renderShop(){
