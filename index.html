@@ -99,7 +99,15 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 @media screen and (max-width:900px){
   .app{flex-direction:column;}
   .sidebar{width:100%;min-width:0;height:auto;position:static;}
-  .page{width:100%;min-height:0;padding:6mm;}
+  .main{padding:16px;}
+  .page{width:100%;min-width:0;min-height:0;padding:6mm;overflow-wrap:anywhere;}
+  /* 讓長拉丁字串(拼音/印尼文)在窄螢幕能自動斷行,不撐破容器 */
+  .page *{overflow-wrap:anywhere;}
+  table{word-break:break-word;}
+  table.ing td.amt{white-space:normal;width:auto;}
+  .vocab{grid-template-columns:1fr 1fr;}
+  .rota th,.rota td{word-break:break-word;}
+  .foot{flex-wrap:wrap;gap:4px;}
 }
 
 /* ---------- Print (black & white optimized) ---------- */
