@@ -588,14 +588,14 @@ const RECIPES = [
   ['撒蔥絲。','Taburi irisan daun bawang.']],
  note:['破布子是台灣傳統的鹹醃果實(罐頭),全聯乾貨區有。它本身鹹香甘甜,蒸魚不用再加鹽或醬油。「破布子」印尼文沒有對應詞,拿罐頭給店員看最快。','Po bu zi adalah buah asin fermentasi khas Taiwan (kaleng), ada di rak kaleng PX Mart. Sudah asin dan manis — tidak perlu tambah garam atau kecap. Tidak ada padanan kata di Indonesia, tunjukkan kalengnya ke pegawai toko.']},
 
-{key:'dumpling', zh:'水餃(電鍋蒸)', py:'shuǐ jiǎo', id:'Pangsit Kukus ⚠️', cups:1.5, tags:['pork'],
- ings:[['dumpling','10 顆 / 10 buah'],['oil','少許(抹盤子防沾) / sedikit (olesan piring)'],['soy','1 大匙(沾的) / untuk cocolan'],['ginger','2 片(可加在盤上去腥)']],
+{key:'dumpling', zh:'水餃(水煮)', py:'shuǐ jiǎo', id:'Pangsit Rebus ⚠️', cups:0, tags:['pork'],
+ ings:[['dumpling','10 顆 / 10 buah'],['soy','1 大匙(沾的) / untuk cocolan'],['scallion','蔥花少許(可加在沾醬) / opsional'],['ginger','2 片(煮水中放,去腥)']],
  steps:[
-  ['水餃不用退冰,直接從冷凍拿出來。','Pangsit tidak perlu dicairkan, langsung dari freezer.'],
-  ['盤子抹一點油(防沾),水餃排上去,每顆留一點縫隙。','Olesi piring dengan sedikit minyak (supaya tidak lengket), tata pangsit dengan jarak.'],
-  ['外鍋 1.5 杯水,放入蒸架和盤子,蓋上蓋子,按開關。','Panci luar 1,5 gelas air. Masukkan rak dan piring. Tutup, tekan tombol.'],
-  ['開關跳起來就好了(約 20–25 分鐘)。','Selesai saat tombol naik (sekitar 20–25 menit).'],
-  ['沾醬油吃。可以配燙青菜就是一餐。','Cocol kecap asin. Bisa ditambah sayur rebus jadi satu kali makan.']],
+  ['煮一鍋大半鍋水(水要多,水餃才不會沾黏)。','Rebus air setengah penuh (air harus banyak supaya pangsit tidak lengket).'],
+  ['水滾了,放入 2 片薑,然後水餃直接從冷凍放進去(不用退冰),輕輕攪一下防沾底。','Setelah mendidih, masukkan 2 iris jahe, lalu masukkan pangsit langsung dari freezer (tidak usah dicairkan), aduk perlahan supaya tidak menempel.'],
+  ['水再滾時,加半碗冷水進去(叫「點水」),重複 2 次。','Saat mendidih lagi, tambahkan setengah mangkuk air dingin (sebut "diachen"). Ulangi 2 kali.'],
+  ['水餃全部浮起來、皮鼓起來就是熟了(約 6–8 分鐘)。','Pangsit sudah matang saat semua mengambang dan kulitnya mengembang (sekitar 6–8 menit).'],
+  ['撈起來瀝乾水,沾醬油、撒蔥花吃。可以配燙青菜就是一餐。','Angkat dan tiriskan. Cocol kecap asin, taburi daun bawang. Bisa ditambah sayur rebus jadi satu kali makan.']],
  note:['⚠️ 此菜含豬肉,規則跟滷肉一樣:只用紅色標籤的專用鍋具。另外這道菜用冷凍水餃(平常家裡不買冷凍,這是雇主特別允許的)。如果妳不方便煮,告訴雇主就好,沒關係。','⚠️ Mengandung BABI — aturan sama dengan semur: hanya alat masak berlabel MERAH. Selain itu, masakan ini memakai pangsit BEKU (biasanya tidak beli beku, ini kecuali diizinkan majikan). Jika Anda tidak bersedia memasaknya, beri tahu majikan — tidak apa-apa.'],warn:true},
 ];
 
@@ -695,14 +695,14 @@ const COMM=[
   {e:'🛏️',zh:'棉被',q:'要蓋被嗎?',py:'mián bèi',id:'selimut'},
   {e:'🧥',zh:'穿外套',q:'穿件外套',py:'wài tào',id:'jaket'},
  ],
- /* 第 3 頁:住(廁所洗澡睡覺) */
+ /* 第 3 頁:睡覺・起床・吃藥提醒 */
  [
-  {e:'🚽',zh:'上廁所',q:'要去廁所嗎?',py:'shàng cè suǒ',id:'ke toilet'},
-  {e:'💩',zh:'大便',q:'要大便嗎?',py:'dà biàn',id:'buang air besar'},
-  {e:'💦',zh:'小便',q:'要小便嗎?',py:'xiǎo biàn',id:'buang air kecil'},
-  {e:'🛁',zh:'洗澡',q:'該洗澡了',py:'xǐ zǎo',id:'mandi'},
   {e:'😴',zh:'睡覺',q:'該睡了',py:'shuì jiào',id:'tidur'},
   {e:'🌅',zh:'起床',q:'該起床了',py:'qǐ chuáng',id:'bangun'},
+  {e:'🌅',zh:'早上吃藥',q:'該吃早上的藥了',py:'zǎo shàng chī yào',id:'obat pagi'},
+  {e:'☀️',zh:'中午吃藥',q:'該吃中午的藥了',py:'zhōng wǔ chī yào',id:'obat siang'},
+  {e:'🌆',zh:'晚上吃藥',q:'該吃晚上的藥了',py:'wǎn shàng chī yào',id:'obat malam'},
+  {e:'🌙',zh:'睡前吃藥',q:'該吃睡前的藥了',py:'shuì qián chī yào',id:'obat sebelum tidur'},
  ],
  /* 第 4 頁:行(活動外出) */
  [
@@ -735,7 +735,7 @@ const COMM=[
 const COMM_TITLES=[
  {zh:'溝通小卡 ① 吃飯・喝水',id:'Kartu Komunikasi (1): Makan & Minum',hint:'指給對方看 / Tunjuk ke lawan bicara'},
  {zh:'溝通小卡 ② 衣服・冷暖',id:'Kartu Komunikasi (2): Pakaian & Suhu',hint:'指給對方看 / Tunjuk ke lawan bicara'},
- {zh:'溝通小卡 ③ 上廁所・洗澡・睡覺',id:'Kartu Komunikasi (3): Toilet, Mandi, Tidur',hint:'指給對方看 / Tunjuk ke lawan bicara'},
+ {zh:'溝通小卡 ③ 睡覺・起床・吃藥提醒',id:'Kartu Komunikasi (3): Tidur, Bangun & Obat',hint:'指給對方看 / Tunjuk ke lawan bicara'},
  {zh:'溝通小卡 ④ 活動・外出',id:'Kartu Komunikasi (4): Aktivitas & Keluar',hint:'指給對方看 / Tunjuk ke lawan bicara'},
  {zh:'溝通小卡 ⑤ 身體不舒服',id:'Kartu Komunikasi (5): Tubuh Tidak Enak',hint:'指給對方看 / Tunjuk ke lawan bicara'},
  {zh:'溝通小卡 ⑥ 看醫生・吃藥',id:'Kartu Komunikasi (6): Dokter & Obat',hint:'指給對方看 / Tunjuk ke lawan bicara'},
