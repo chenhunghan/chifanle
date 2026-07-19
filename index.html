@@ -219,9 +219,11 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .page .steps .id-text{font-size:14.5px;line-height:1.45;}
   table.ing{font-size:14px;}
   table.ing td{padding:4px 5px;}
-  /* 滷肉頁特例:8 樣食材,放大後會溢出 → 食材表與 padding 維持精簡 */
-  #pg-luro table.ing{font-size:13px;}
-  #pg-luro table.ing td{padding:3px 4px;}
+  /* 食材多的頁面特例:放大後逼近 A4,食材表與步驟維持精簡 */
+  #pg-luro table.ing,#pg-beefonion table.ing{font-size:13px;}
+  #pg-luro table.ing td,#pg-beefonion table.ing td{padding:3px 4px;}
+  #pg-luro .steps li,#pg-beefonion .steps li{padding:5px 0;}
+  #pg-luro .steps .zh,#pg-beefonion .steps .zh{font-size:16px;}
 
   /* 採購清單頁:允許跨頁(內容動態,不固定高度) */
   #pg-shop{height:auto;min-height:296mm;overflow:visible;}
