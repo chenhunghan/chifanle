@@ -82,6 +82,17 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 .comm-card .id{font-size:18px;font-style:italic;color:var(--mint);margin-top:2px;font-weight:500;}
 .comm-card .cut-line{margin-top:auto;padding-top:8px;width:100%;border-top:1.5px dashed var(--line);font-size:9px;color:var(--sub);letter-spacing:.05em;}
 
+/* schedule table (一週工作時間表) */
+.sched-table{width:100%;border-collapse:collapse;table-layout:fixed;}
+.sched-table th,.sched-table td{border:2px solid var(--mint);padding:7px 9px;vertical-align:top;text-align:left;}
+.sched-table th{background:var(--mint);color:#fff;font-size:15px;font-weight:900;letter-spacing:.05em;}
+.sched-table th.time,.sched-table td.time{width:90px;text-align:center;font-weight:900;color:var(--mint-deep);background:var(--mint-pale);}
+.sched-table th.id-col,.sched-table td.id-col{width:38%;}
+.sched-table .cell{font-size:16px;font-weight:500;line-height:1.45;outline:none;}
+.sched-table .cell:focus{background:#F2FAF6;}
+.sched-table td.time .cell{font-size:16px;font-weight:900;}
+.sched-table .cell .id-text{font-size:14px;font-weight:400;display:block;margin-top:2px;}
+
 /* shopping list */
 .shop li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--line);font-size:14.5px;list-style:none;}
 .shop .box{flex:none;width:16px;height:16px;border:2px solid var(--mint);border-radius:3px;margin-top:3px;}
@@ -171,6 +182,14 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .comm-card .emoji{font-size:60px;}
   .comm-card .zh{font-size:38px;}
 
+  /* 工作時間表:手機字略縮、印尼文欄變窄 */
+  .sched-table th,.sched-table td{padding:6px 5px;}
+  .sched-table th{font-size:13px;}
+  .sched-table th.time,.sched-table td.time{width:70px;}
+  .sched-table th.id-col,.sched-table td.id-col{width:34%;}
+  .sched-table .cell{font-size:14px;}
+  .sched-table .cell .id-text{font-size:12px;}
+
   .foot{flex-wrap:wrap;gap:4px;}
 }
 
@@ -238,6 +257,14 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .comm-page .comm-card .id{color:#333;}
   .comm-page .comm-card .py{color:#555;}
   .comm-page .comm-card .cut-line{border-top:1.5px dashed #555;color:#555;}
+
+  /* 工作時間表列印:黑白最佳化,字放大好讀(一天一頁空間夠) */
+  .sched-page .sched-table th{background:#fff;color:#000;border:2px solid #000;font-size:16px;}
+  .sched-page .sched-table th,.sched-page .sched-table td{border-color:#000;}
+  .sched-page .sched-table td.time{background:#F0F0F0;color:#000;}
+  .sched-page .sched-table .cell{font-size:17px;}
+  .sched-page .sched-table td.time .cell{font-size:17px;}
+  .sched-page .sched-table .cell .id-text{font-size:15px;color:#333;}
 
   .page.hidden{display:none !important;}
 }
@@ -756,6 +783,44 @@ const COMM_TITLES=[
  {zh:'溝通小卡 ⑧ 身體打理',id:'Kartu Komunikasi (8): Perawatan Tubuh',hint:'指給對方看 / Tunjuk ke lawan bicara'},
 ];
 
+/* ================= WEEKLY SCHEDULE (一週工作時間表) ================= */
+/* 每天一頁,時間/任務/印尼文。每項可編輯。 */
+/* base:每天固定主軸;diff:當日替換或追加的項目 */
+const SCHED_BASE=[
+ ['07:00','起床、開窗通風','Bangun, buka jendera'],
+ ['07:30','準備早餐(燕麥牛奶或蛋餅)','Siapkan sarapan'],
+ ['08:00','早餐時間 + 早上吃藥 💊','Sarapan + obat pagi 💊'],
+ ['08:30','收拾餐具 + 掃地拖地','Berishkan piring + sapu & pel lantai'],
+ ['09:30','陪長輩散步(請攙扶,慢慢走)','Jalan-jalan dengan lansia (pegangi, pelan-pelan)'],
+ ['11:30','準備中餐','Siapkan makan siang'],
+ ['12:00','中餐時間 + 中午吃藥 💊','Makan siang + obat siang 💊'],
+ ['12:30','收拾餐具','Berishkan piring'],
+ ['13:00','午休(長輩休息,幫傭可備料)','Istirahat siang (lansia tidur, boleh siapkan bahan)'],
+ ['15:00','下午茶點心時間','Waktu camilan sore'],
+ ['17:00','準備晚餐','Siapkan makan malam'],
+ ['18:00','晚餐時間 + 晚上吃藥 💊','Makan malam + obat malam 💊'],
+ ['18:30','收拾餐具、整理廚房','Berishkan piring & dapur'],
+ ['20:00','長輩休息時間','Waktu istirahat lansia'],
+ ['21:00','睡前吃藥 💊','Obat sebelum tidur 💊'],
+ ['21:30','長輩就寢','Lansia tidur'],
+];
+/* 當日 15:00 的替換任務(洗衣/大掃除/備料) */
+const SCHED_15_DIFF={
+ '週二':'洗衣服、曬衣服 (cuci baju, jemur baju)',
+ '週五':'洗衣服、曬衣服 (cuci baju, jemur baju)',
+ '週六':'大掃除:廁所、廚房深度清潔 + 收衣服 (bersih besar: toilet & dapur, lipat baju)',
+ '週日':'備下一週食材、整理冰箱 (siapkan bahan minggu depan, berishkan kulkas)',
+};
+const SCHEDULE=[
+ {day:'星期一',id:'Senin'},
+ {day:'星期二',id:'Selasa'},
+ {day:'星期三',id:'Rabu'},
+ {day:'星期四',id:'Kamis'},
+ {day:'星期五',id:'Jumat'},
+ {day:'星期六',id:'Sabtu'},
+ {day:'星期日',id:'Minggu'},
+];
+
 function basicPages(){
 return `
 <!-- 電鍋教學 -->
@@ -887,7 +952,31 @@ ${COMM.map((cards,i)=>`
   <span class="id-text">Setiap makan 3 lauk: 1 ikan/daging + 1 tahu + 1 sayur + nasi. Ganti jenis sayur setiap hari. Semur babi (⚠️) sekali masak untuk dua kali makan. Masakan telur adalah lauk TAMBAHAN saat nafsu makan bagus.</span></div>
   <div class="note screen-only" style="margin-top:8px"><b>給雇主(此段不會印出):</b>畫面上可直接點格子修改菜色再列印。</div>
   <div class="foot"><span>家庭幫傭上工手冊</span><span>七日循環菜單 Menu Siklus</span></div>
+</section>
+
+<!-- 幫傭一週工作時間表 星期一 ~ 星期日 -->
+${SCHEDULE.map((s,i)=>{
+  const diff15 = SCHED_15_DIFF[s.day];
+  return `
+<section class="page sched-page" id="pg-sched${i+1}" data-nav="basic" data-zh="工作時間表 ${s.day}" data-id="Jadwal Kerja (${s.id})">
+  <div class="pg-head"><div><div class="zh">工作時間表 · ${s.day}</div>
+  <div class="sub"><span class="id-text">Jadwal Kerja Harian · ${s.id}</span> · 每天同樣的時間,每週重複 / jadwal sama setiap minggu</div></div></div>
+  <table class="sched-table">
+    <tr><th class="time">時間 Waktu</th><th>任務 Tugas <span style="font-weight:400;font-style:italic">(中)</span></th><th class="id-col">Tugas <span style="font-weight:400;font-style:italic">(Indonesia)</span></th></tr>
+    ${SCHED_BASE.map(([t,zh,id])=>{
+      const is15 = t==='15:00';
+      const zhCell = is15 && diff15 ? diff15.split(' (')[0] : zh;
+      const idCell = is15 && diff15 ? (diff15.match(/\(([^)]+)\)/)||[])[1] || id : id;
+      return `<tr><td class="time"><div class="cell" contenteditable="true">${t}</div></td>
+        <td><div class="cell" contenteditable="true">${zhCell}</div></td>
+        <td class="id-col"><div class="cell" contenteditable="true"><span class="id-text">${idCell}</span></div></td></tr>`;
+    }).join('')}
+  </table>
+  <div class="note" style="margin-top:auto"><b>💡 </b>吃完藥要在格子裡打 ✓ 記錄。散步時一定要攙扶長輩,慢慢走。時間可以調整,但三餐和吃藥要準時。<br>
+  <span class="id-text">Beri tanda ✓ di kolom setelah obat diminum. Saat jalan-jalan SELALU pegangi lansia, pelan-pelan. Waktu boleh diubah, tapi 3 makan & obat harus tepat waktu.</span></div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>工作時間表 ${s.day}</span></div>
 </section>`;
+}).join('')}`;
 }
 
 /* ================= RENDER ================= */
