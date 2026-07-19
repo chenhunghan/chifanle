@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>家庭幫傭上工手冊產生器 · Buku Panduan Memasak</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#3E7C6B; --mint-deep:#1F3D34; --mint-pale:#E8EEEA;
+  --paper:#FFFFFF; --ink:#1C221F; --sub:#5B6662;
+  --warn:#B03A2E; --warn-bg:#FBEAE7;
+  --line:#D6DED9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--mint-pale);color:var(--ink);}
+.id-text{font-style:italic;color:var(--mint);}
+.py{color:var(--sub);font-size:.82em;letter-spacing:.03em;}
+
+/* ---------- Screen layout ---------- */
+.app{display:flex;min-height:100vh;}
+.sidebar{width:320px;min-width:320px;background:var(--mint-deep);color:#EAF2EE;padding:22px 20px 40px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar h1{font-size:20px;font-weight:900;line-height:1.3;}
+.sidebar h1 span{display:block;font-size:12px;font-weight:400;font-style:italic;color:#9CC4B5;margin-top:4px;}
+.sidebar .hint{font-size:12px;color:#9CC4B5;margin:10px 0 18px;line-height:1.6;}
+.group{margin-bottom:16px;}
+.group h2{font-size:12px;letter-spacing:.15em;color:#7FB3A0;font-weight:700;margin-bottom:8px;border-bottom:1px solid #33564A;padding-bottom:4px;}
+.chk{display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:14px;line-height:1.4;}
+.chk:hover{background:#2B4C41;}
+.chk input{margin-top:3px;accent-color:#7FD6BC;}
+.chk .tag{font-size:10px;background:#33564A;border-radius:4px;padding:1px 5px;margin-left:4px;color:#BFE3D5;white-space:nowrap;}
+.chk .tag.pork{background:var(--warn);color:#fff;}
+.btnrow{display:flex;gap:8px;margin:6px 0 14px;}
+.btnrow button{flex:1;font-family:inherit;font-size:12px;padding:6px 0;border-radius:8px;border:1px solid #4A7263;background:transparent;color:#CDE7DC;cursor:pointer;}
+.btnrow button:hover{background:#2B4C41;}
+.printbtn{width:100%;font-family:inherit;font-size:16px;font-weight:900;padding:14px;border:none;border-radius:12px;background:#7FD6BC;color:var(--mint-deep);cursor:pointer;margin-top:8px;}
+.printbtn:hover{background:#93E4CB;}
+.print-hint{font-size:11px;color:#9CC4B5;margin-top:8px;line-height:1.6;}
+.main{flex:1;padding:32px;display:flex;flex-direction:column;align-items:center;gap:24px;}
+
+/* ---------- A4 pages ---------- */
+.page{background:var(--paper);width:210mm;min-height:296mm;padding:14mm 16mm;box-shadow:0 4px 24px rgba(31,61,52,.18);position:relative;display:flex;flex-direction:column;}
+.page.hidden{display:none;}
+.pg-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--mint);padding-bottom:8px;margin-bottom:14px;}
+.pg-head .zh{font-size:30px;font-weight:900;line-height:1.15;}
+.pg-head .sub{margin-top:2px;font-size:14px;}
+.badges{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+.badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--mint-pale);color:var(--mint-deep);white-space:nowrap;}
+.badge.pork{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);}
+.cups{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--mint-deep);background:var(--mint-pale);border-radius:20px;padding:4px 12px;}
+.cups svg{display:block;}
+.sec-t{font-size:15px;font-weight:900;color:var(--mint);letter-spacing:.1em;margin:12px 0 6px;}
+.sec-t small{font-weight:400;font-style:italic;letter-spacing:0;margin-left:6px;color:var(--mint);}
+table.ing{width:100%;border-collapse:collapse;font-size:14px;}
+table.ing td{border-bottom:1px solid var(--line);padding:5px 4px;vertical-align:top;}
+table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
+.steps{list-style:none;counter-reset:st;}
+.steps li{counter-increment:st;display:flex;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);}
+.steps li::before{content:counter(st);flex:none;width:28px;height:28px;border-radius:50%;background:var(--mint);color:#fff;font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.steps .zh{font-size:16px;font-weight:500;line-height:1.5;}
+.steps .id-text{font-size:13.5px;display:block;margin-top:2px;line-height:1.45;}
+.note{margin-top:auto;background:var(--mint-pale);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.6;}
+.note.warn{background:var(--warn-bg);border:1.5px solid var(--warn);}
+.note b{color:var(--mint-deep);}
+.note.warn b{color:var(--warn);}
+.foot{margin-top:10px;font-size:10px;color:var(--sub);display:flex;justify-content:space-between;}
+
+/* vocab grid */
+.vocab{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.vcard{border:1px solid var(--line);border-radius:10px;padding:5px 9px;}
+.vcard .zh{font-size:19px;font-weight:900;}
+.vcard .py{display:block;}
+.vcard .id-text{font-size:13px;}
+
+/* shopping list */
+.shop li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--line);font-size:14.5px;list-style:none;}
+.shop .box{flex:none;width:16px;height:16px;border:2px solid var(--mint);border-radius:3px;margin-top:3px;}
+.shop .who{color:var(--sub);font-size:12.5px;}
+.aisle{font-size:13px;font-weight:900;color:#fff;background:var(--mint);display:inline-block;border-radius:6px;padding:2px 10px;margin:12px 0 4px;}
+
+/* 3-day rotation menu */
+.rota{width:100%;border-collapse:collapse;table-layout:fixed;}
+.rota th,.rota td{border:2px solid var(--mint);padding:6px 8px;vertical-align:top;}
+.rota th{background:var(--mint);color:#fff;font-size:16px;}
+.rota td.day{background:var(--mint-pale);width:62px;text-align:center;font-weight:900;font-size:15px;color:var(--mint-deep);}
+.rota td.day .id-text{font-size:11px;font-weight:400;display:block;}
+.rota .cell{font-size:13.5px;font-weight:700;line-height:1.45;outline:none;}
+.rota .cell:focus{background:#F2FAF6;}
+.rota .cell .id-text{font-size:10.5px;font-weight:400;display:block;margin-top:1px;}
+
+/* cooker page */
+.cook-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.cook-card{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.55;}
+.cook-card .t{font-weight:900;color:var(--mint-deep);font-size:15px;}
+.watertbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:4px;}
+.watertbl th,.watertbl td{border:1px solid var(--line);padding:6px 8px;text-align:center;}
+.watertbl th{background:var(--mint-pale);font-size:13px;}
+
+@media screen and (max-width:900px){
+  .app{flex-direction:column;}
+  .sidebar{width:100%;min-width:0;height:auto;position:static;}
+  .page{width:100%;min-height:0;padding:6mm;}
+}
+
+/* ---------- Print (black & white optimized) ---------- */
+@page{size:A4;margin:0;}
+@media print{
+  body{background:#fff;}
+  :root{--mint:#000;--mint-deep:#000;--mint-pale:#F0F0F0;--sub:#444;--line:#999;--warn:#000;--warn-bg:#fff;}
+  .id-text{color:#333;}
+  .py{color:#555;}
+  .badge{background:#fff;border:1.5px solid #000;color:#000;}
+  .badge.pork{border:2.5px solid #000;font-weight:900;}
+  .cups{background:#fff;border:1.5px solid #000;color:#000;}
+  svg path{stroke:#000 !important;}
+  .steps li::before{background:#000;color:#fff;}
+  .rota th{background:#fff;color:#000;border:2px solid #000;}
+  .rota th,.rota td{border-color:#000;}
+  .rota td.day{background:#F0F0F0;color:#000;}
+  .aisle{background:#fff;color:#000;border:1.5px solid #000;}
+  .note.warn{border:2.5px solid #000;}
+  .shop .box{border-color:#000;}
+  .sidebar,.screen-only{display:none !important;}
+  .main{padding:0;gap:0;display:block;}
+  .page{box-shadow:none;width:210mm;height:296mm;page-break-after:always;overflow:hidden;}
+  .page.hidden{display:none !important;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ======================= SIDEBAR ======================= -->
+<aside class="sidebar">
+  <h1>幫傭上工手冊產生器<span>Buku Panduan Memasak untuk Perawat</span></h1>
+  <p class="hint">勾選要列印的頁面 → 按「列印」→ 目的地選「儲存為 PDF」。每個項目就是一張 A4。</p>
+  <div class="btnrow">
+    <button onclick="setAll(true)">全選</button>
+    <button onclick="setAll(false)">全部清除</button>
+  </div>
+  <div class="group"><h2>基礎頁 DASAR</h2><div id="nav-basic"></div></div>
+  <div class="group"><h2>早餐 SARAPAN</h2><div id="nav-bf"></div></div>
+  <div class="group"><h2>魚・肉・蛋 PROTEIN</h2><div id="nav-animal"></div></div>
+  <div class="group"><h2>豆腐類 TAHU</h2><div id="nav-plant"></div></div>
+  <div class="group"><h2>青菜・飯 SAYUR & NASI</h2><div id="nav-veg"></div></div>
+  <button class="printbtn" onclick="window.print()">🖨 列印 / 存成 PDF</button>
+  <p class="print-hint">列印視窗中也可再用「頁面範圍」只印其中幾頁。已針對黑白印表機最佳化,直接列印即可。含豬肉的菜有 ⚠️ 標示,請先與幫傭溝通。</p>
+</aside>
+
+<!-- ======================= PAGES ======================= -->
+<main class="main" id="pages"></main>
+</div>
+
+<script>
+/* ================= INGREDIENT DICTIONARY ================= */
+const ING = {
+  rice:{zh:'白米',py:'bái mǐ',id:'beras',aisle:'乾貨'},
+  oats:{zh:'桂格大燕麥片',py:'yàn mài piàn',id:'havermut Quaker (oatmeal)',aisle:'乾貨'},
+  milk:{zh:'鮮奶',py:'xiān nǎi',id:'susu segar',aisle:'冷藏'},
+  eggskin:{zh:'蛋餅皮(冷藏)',py:'dàn bǐng pí',id:'kulit dadar gulung (rak dingin)',aisle:'冷藏'},
+  flour:{zh:'中筋麵粉',py:'miàn fěn',id:'tepung terigu',aisle:'乾貨'},
+  egg:{zh:'雞蛋',py:'jī dàn',id:'telur ayam',aisle:'冷藏'},
+  tomato:{zh:'牛番茄',py:'niú fān qié',id:'tomat',aisle:'蔬菜'},
+  anyveg:{zh:'青菜(任選一種):地瓜葉/菠菜/青江菜/空心菜/莧菜',py:'qīng cài',id:'sayur hijau (pilih satu): daun ubi / bayam / pakcoy / kangkung / bayam merah',aisle:'蔬菜'},
+  cabbage:{zh:'高麗菜',py:'gāo lì cài',id:'kol / kubis',aisle:'蔬菜'},
+  anyfish:{zh:'魚(任選一種):鯛魚片/鱸魚片/虱目魚肚/白帶魚切片',py:'yú',id:'ikan (pilih satu): fillet tilapia / fillet kakap / bandeng / layur',aisle:'生鮮(冷藏)'},
+  shrimp:{zh:'白蝦(生鮮)',py:'bái xiā',id:'udang segar',aisle:'生鮮(冷藏)'},
+  beef:{zh:'牛肉炒肉片(嫩肩里肌或梅花)',py:'niú ròu piàn',id:'irisan daging sapi (bagian sampil / chuck)',aisle:'生鮮(冷藏)'},
+  greenpepper:{zh:'青椒',py:'qīng jiāo',id:'paprika hijau',aisle:'蔬菜'},
+  cauliflower:{zh:'花椰菜(綠或白)',py:'huā yē cài',id:'brokoli atau kembang kol',aisle:'蔬菜'},
+  starch:{zh:'太白粉',py:'tài bái fěn',id:'tepung tapioka / maizena',aisle:'乾貨'},
+  whitepepper:{zh:'白胡椒粉',py:'bái hú jiāo fěn',id:'lada putih bubuk',aisle:'乾貨'},
+  porkshank:{zh:'豬老鼠肉(或豬腱肉) ⚠️豬肉',py:'lǎo shǔ ròu',id:'⚠️ daging BABI bagian betis (empuk)',aisle:'生鮮(冷藏)'},
+  porklean:{zh:'豬後腿瘦肉 ⚠️豬肉',py:'zhū hòu tuǐ shòu ròu',id:'⚠️ daging paha BABI (tanpa lemak)',aisle:'生鮮(冷藏)'},
+  tofu:{zh:'嫩豆腐(盒裝)',py:'nèn dòu fǔ',id:'tahu sutra (kotak)',aisle:'冷藏'},
+  firmtofu:{zh:'板豆腐',py:'bǎn dòu fǔ',id:'tahu putih padat',aisle:'冷藏'},
+  doufugan:{zh:'豆乾',py:'dòu gān',id:'tahu kering',aisle:'冷藏'},
+  kelp:{zh:'海帶結',py:'hǎi dài jié',id:'rumput laut simpul',aisle:'冷藏'},
+  wakame:{zh:'乾海帶芽',py:'hǎi dài yá',id:'rumput laut wakame kering',aisle:'乾貨'},
+  miso:{zh:'味噌',py:'wèi zēng',id:'miso (pasta kedelai)',aisle:'冷藏'},
+  loofah:{zh:'絲瓜',py:'sī guā',id:'oyong / gambas',aisle:'蔬菜'},
+  clam:{zh:'蛤蜊',py:'gé lí',id:'kerang',aisle:'生鮮(冷藏)'},
+  carrot:{zh:'紅蘿蔔',py:'hóng luó bo',id:'wortel',aisle:'蔬菜'},
+  onion:{zh:'洋蔥',py:'yáng cōng',id:'bawang bombay',aisle:'蔬菜'},
+  ginger:{zh:'薑',py:'jiāng',id:'jahe',aisle:'蔬菜'},
+  scallion:{zh:'蔥',py:'cōng',id:'daun bawang',aisle:'蔬菜'},
+  garlic:{zh:'蒜頭',py:'suàn tóu',id:'bawang putih',aisle:'蔬菜'},
+  soy:{zh:'醬油',py:'jiàng yóu',id:'kecap asin',aisle:'乾貨'},
+  salt:{zh:'鹽',py:'yán',id:'garam',aisle:'乾貨'},
+  sugar:{zh:'糖',py:'táng',id:'gula',aisle:'乾貨'},
+  oil:{zh:'橄欖油(或芥花油)',py:'gǎn lǎn yóu',id:'minyak zaitun (atau minyak kanola)',aisle:'乾貨'},
+};
+
+/* ================= RECIPES ================= */
+const RECIPES = [
+/* ---- 早餐 Sarapan ---- */
+{key:'oatmeal', zh:'燕麥牛奶(早餐)', py:'yàn mài niú nǎi', id:'Havermut Susu Hangat', cups:0.5, tags:['早餐'],
+ ings:[['oats','4 大匙 / 4 sendok makan'],['milk','1 杯 (約250ml) / 1 gelas']],
+ steps:[
+  ['馬克杯裡放 4 大匙燕麥片。','Masukkan 4 sendok makan havermut ke dalam mug.'],
+  ['倒入鮮奶到 8 分滿。','Tuang susu segar sampai 80% penuh.'],
+  ['外鍋加半杯水,馬克杯放進電鍋(不用蓋盤子)。','Panci luar setengah gelas air. Taruh mug di dalam penanak nasi.'],
+  ['蓋上蓋子,按開關,跳起來就好。','Tutup, tekan tombol. Selesai saat tombol naik.'],
+  ['攪拌一下,試溫度,溫溫的才給老人。','Aduk, cek suhu. Berikan saat hangat, jangan terlalu panas.']],
+ note:['阿公阿嬤每天早上習慣這樣吃。杯子拿出來很燙,用乾布拿。','Kakek-nenek terbiasa sarapan ini setiap pagi. Mug sangat panas, pakai lap kering.']},
+
+{key:'danbing', zh:'蛋餅(早餐)', py:'dàn bǐng', id:'Dadar Gulung Telur', cups:0, tags:['早餐'],
+ ings:[['eggskin','2 片(或自己調粉漿) / 2 lembar'],['egg','2 顆 / 2 butir'],['scallion','1 根切蔥花'],['oil','1 小匙'],['soy','一點點沾的 / sedikit untuk cocolan']],
+ steps:[
+  ['平底鍋加一點油,開小火。','Panaskan sedikit minyak di wajan datar, api kecil.'],
+  ['蛋打散加蔥花,倒入鍋中攤平。','Kocok telur dengan daun bawang, tuang ke wajan, ratakan.'],
+  ['蛋還沒全熟時,蓋上一片蛋餅皮。','Sebelum telur matang penuh, taruh kulit dadar di atasnya.'],
+  ['翻面煎 1 分鐘,把餅皮煎到有一點金黃。','Balik, masak 1 menit sampai sedikit kecokelatan.'],
+  ['捲起來,切小段,沾一點點醬油。','Gulung, potong kecil, cocol sedikit kecap asin.']],
+ note:['蛋餅皮在全聯冷藏區。也可以自己調粉漿:麵粉半杯+水半杯多一點+蔥花,攪勻煎成薄餅代替餅皮。','Kulit dadar ada di rak dingin PX Mart. Bisa juga buat sendiri: setengah gelas tepung + air + daun bawang, aduk, masak jadi dadar tipis.']},
+
+/* ---- 動物蛋白 Protein hewani ---- */
+{key:'fish', zh:'清蒸魚', py:'qīng zhēng yú', id:'Ikan Kukus', cups:1, tags:[],
+ ings:[['anyfish','1 片 (約250g) / 1 potong'],['ginger','5 片 / 5 iris'],['scallion','1 根 / 1 batang'],['soy','1 大匙 (15ml)']],
+ steps:[
+  ['魚沖水,用紙巾擦乾,放在盤子上。','Bilas ikan, keringkan dengan tisu, taruh di piring.'],
+  ['魚上面放薑片。','Letakkan irisan jahe di atas ikan.'],
+  ['外鍋 1 杯水,放入蒸架和盤子,蓋上蓋子,按開關。','Panci luar 1 gelas air. Masukkan rak dan piring. Tutup, tekan tombol.'],
+  ['開關跳起來就好了(約 15 分鐘)。','Selesai saat tombol naik (sekitar 15 menit).'],
+  ['淋上醬油,放蔥絲。','Siram kecap asin, taburi irisan daun bawang.']],
+ note:['買全聯生鮮區「冷藏」的魚,不要買冷凍的。鯛魚片、鱸魚片沒有刺最安全;虱目魚肚、白帶魚有刺,給老人吃之前一定要用叉子仔細挑刺、檢查。','Beli ikan SEGAR di rak dingin (bukan beku). Fillet tilapia & kakap tanpa duri, paling aman. Bandeng & layur ADA DURI — buang semua duri dan periksa teliti sebelum diberikan ke lansia.']},
+
+{key:'shrimp', zh:'水煮蝦', py:'shuǐ zhǔ xiā', id:'Udang Rebus', cups:0, tags:[],
+ ings:[['shrimp','300g'],['ginger','3 片'],['scallion','1 根'],['soy','1 大匙(沾的) / untuk cocolan']],
+ steps:[
+  ['蝦子沖洗乾淨。','Cuci udang sampai bersih.'],
+  ['煮一鍋水,放薑片和蔥,煮滾。','Rebus air dengan jahe dan daun bawang.'],
+  ['放入蝦子,煮到全部變紅色(約 2–3 分鐘)。','Masukkan udang, rebus sampai semua berwarna merah (2–3 menit).'],
+  ['撈起來瀝乾。','Angkat dan tiriskan.'],
+  ['幫老人剝殼,沾一點醬油吃。','Kupas kulitnya untuk lansia, makan dengan cocolan kecap asin.']],
+ note:['一定要先剝好殼、去掉蝦頭再給老人。','Selalu kupas kulit dan buang kepala udang dulu sebelum diberikan ke lansia.']},
+
+{key:'beefonion', zh:'洋蔥炒牛肉', py:'yáng cōng chǎo niú ròu', id:'Tumis Sapi Bawang Bombay', cups:0, tags:[],
+ ings:[['beef','200g'],['onion','1 顆切絲 / 1 buah, iris'],['soy','1 大匙'],['starch','1 小匙'],['sugar','半小匙'],['oil','1 大匙'],['garlic','2 瓣']],
+ steps:[
+  ['醃牛肉(讓肉變軟):牛肉片加半大匙醬油、1 小匙太白粉、1 大匙水,用手抓 1 分鐘,放 15 分鐘。','Marinasi (supaya empuk): lumuri daging dengan setengah sendok kecap asin, 1 sendok teh tepung tapioka, 1 sendok makan air. Remas 1 menit, diamkan 15 menit.'],
+  ['鍋子加油,先炒洋蔥絲到軟、變透明,盛起來。','Tumis bawang bombay dengan minyak sampai lembut dan bening. Angkat.'],
+  ['加一點油,炒蒜末和牛肉片,大火快炒到變色。','Tambah sedikit minyak, tumis bawang putih dan daging api besar sampai berubah warna.'],
+  ['洋蔥倒回去,加剩下的醬油和糖,炒勻就起鍋。','Masukkan bawang bombay kembali, tambah sisa kecap dan gula, aduk rata, angkat.'],
+  ['牛肉不要炒太久,會變硬。','Jangan masak daging terlalu lama, nanti keras.']],
+ note:['牛肉買全聯的「嫩肩里肌炒肉片」或「梅花牛肉片」,已經切好薄片。醬油+太白粉+水抓醃,肉就會軟。','Beli irisan daging sapi bagian sampil (chuck) atau chuck roll di PX Mart, sudah diiris tipis. Marinasi kecap + tepung tapioka + air membuat daging empuk.']},
+
+{key:'greenpepperbeef', zh:'青椒炒牛肉', py:'qīng jiāo chǎo niú ròu', id:'Tumis Sapi Paprika Hijau', cups:0, tags:[],
+ ings:[['beef','200g'],['greenpepper','2 顆切絲 / 2 buah, iris'],['soy','1 大匙'],['starch','1 小匙'],['oil','1 大匙'],['garlic','2 瓣']],
+ steps:[
+  ['醃牛肉:牛肉片加半大匙醬油、1 小匙太白粉、1 大匙水,抓 1 分鐘,放 15 分鐘。','Marinasi: lumuri daging dengan setengah sendok kecap asin, 1 sendok teh tepung tapioka, 1 sendok makan air. Remas 1 menit, diamkan 15 menit.'],
+  ['青椒去籽切絲。','Buang biji paprika, iris tipis.'],
+  ['鍋子加油,先炒青椒 2 分鐘,盛起來。','Tumis paprika 2 menit dengan minyak, angkat.'],
+  ['炒蒜末和牛肉,大火快炒到變色。','Tumis bawang putih dan daging api besar sampai berubah warna.'],
+  ['青椒倒回去,加剩下的醬油,炒勻就起鍋。','Masukkan paprika kembali, tambah sisa kecap, aduk rata, angkat.']],
+ note:['做法和洋蔥炒牛肉一樣,只是換青椒。青椒切細一點,老人比較好咬。','Cara sama dengan tumis bawang bombay, hanya ganti paprika. Iris tipis supaya mudah dikunyah.']},
+
+{key:'milkfish', zh:'香煎虱目魚肚', py:'xiāng jiān shī mù yú dù', id:'Bandeng Goreng', cups:0, tags:[],
+ ings:[['anyfish','虱目魚肚 1 片 / 1 potong perut bandeng'],['salt','1 小撮'],['oil','1 大匙']],
+ steps:[
+  ['魚肚用紙巾擦很乾(不然油會噴)。','Keringkan ikan dengan tisu sampai benar-benar kering (supaya minyak tidak meletup).'],
+  ['兩面抹一點點鹽。','Lumuri kedua sisi dengan sedikit garam.'],
+  ['鍋子加油,開中小火,魚皮朝下放入。','Panaskan minyak api sedang-kecil, taruh ikan dengan kulit di bawah.'],
+  ['煎 4–5 分鐘到金黃,翻面再煎 3 分鐘。','Goreng 4–5 menit sampai keemasan, balik, goreng 3 menit lagi.'],
+  ['給老人吃之前,把小刺全部挑掉、仔細檢查。','Sebelum diberikan ke lansia, buang SEMUA duri kecil dan periksa teliti.']],
+ note:['虱目魚肚有小刺,一定要挑乾淨。全聯有賣已去大刺的虱目魚肚。','Bandeng ada duri kecil, harus dibuang semua. PX Mart menjual perut bandeng yang duri besarnya sudah dibuang.']},
+
+{key:'tomatoegg', zh:'蕃茄炒蛋', py:'fān qié chǎo dàn', id:'Tumis Telur Tomat', cups:0, tags:[],
+ ings:[['tomato','3 顆 (約450g) / 3 buah'],['egg','3 顆 / 3 butir'],['scallion','1 根 / 1 batang'],['sugar','1 小匙'],['salt','半小匙'],['oil','1 大匙 (15ml)']],
+ steps:[
+  ['番茄洗乾淨,切成 8 塊。蛋打散,加一點鹽。','Cuci tomat, potong 8 bagian. Kocok telur dengan sedikit garam.'],
+  ['鍋子加油,開中火,倒入蛋液。','Panaskan minyak api sedang, tuang telur.'],
+  ['蛋半熟就先盛起來。','Angkat telur saat setengah matang.'],
+  ['番茄下鍋炒 3 分鐘,加糖、鹽、半碗水,煮到軟。','Tumis tomat 3 menit, tambah gula, garam, setengah mangkuk air. Masak sampai lembut.'],
+  ['蛋倒回去拌一拌,撒蔥花。','Masukkan telur kembali, aduk, taburi daun bawang.']],
+ note:['番茄煮軟一點,老人比較好吃。','Masak tomat sampai sangat lembut untuk lansia.']},
+
+{key:'carrotegg', zh:'紅蘿蔔炒蛋', py:'hóng luó bo chǎo dàn', id:'Tumis Telur Wortel', cups:0, tags:[],
+ ings:[['carrot','1 根 (約150g) / 1 batang'],['egg','3 顆 / 3 butir'],['salt','半小匙'],['oil','1 大匙']],
+ steps:[
+  ['紅蘿蔔削皮,刨成細絲。','Kupas wortel, serut halus.'],
+  ['鍋子加油,紅蘿蔔絲炒 3 分鐘,加 2 大匙水炒軟。','Tumis wortel 3 menit, tambah 2 sendok air, masak sampai lembut.'],
+  ['蛋加鹽打散,倒入鍋中。','Kocok telur dengan garam, tuang ke wajan.'],
+  ['炒到蛋熟就好。','Aduk sampai telur matang.']],
+ note:['紅蘿蔔要炒到軟,老人才好咬。','Wortel harus lembut supaya mudah dikunyah.']},
+
+{key:'steamegg', zh:'蒸蛋', py:'zhēng dàn', id:'Telur Kukus', cups:1, tags:[],
+ ings:[['egg','3 顆 / 3 butir'],['salt','1/4 小匙'],['scallion','少許蔥花']],
+ steps:[
+  ['蛋打散,加 1.5 碗溫水和鹽,攪拌均勻。','Kocok telur, tambah 1,5 mangkuk air hangat dan garam. Aduk rata.'],
+  ['過濾倒入碗中,把泡泡撈掉。','Saring ke mangkuk, buang busa.'],
+  ['碗上蓋一個盤子。','Tutup mangkuk dengan piring.'],
+  ['外鍋 1 杯水,放入蒸,跳起來就好。','Panci luar 1 gelas air. Kukus sampai tombol naik.'],
+  ['撒上蔥花。','Taburi daun bawang.']],
+ note:['很軟很好吞,老人牙口不好的日子最適合。','Sangat lembut, mudah ditelan. Cocok untuk lansia.']},
+
+{key:'loofah', zh:'絲瓜蛤蜊', py:'sī guā gé lí', id:'Oyong dengan Kerang', cups:1, tags:[],
+ ings:[['loofah','1 條 (約400g) / 1 buah'],['clam','300g (泡鹽水吐沙) / rendam air garam'],['ginger','3 片'],['salt','1 小撮']],
+ steps:[
+  ['蛤蜊泡鹽水 1 小時吐沙,洗乾淨。','Rendam kerang di air garam 1 jam, lalu cuci bersih.'],
+  ['絲瓜削皮,切成半圓厚片。','Kupas oyong, potong tebal setengah lingkaran.'],
+  ['絲瓜、薑放內鍋,蛤蜊放上面,不用加水。','Masukkan oyong dan jahe, kerang di atas. Tidak perlu air.'],
+  ['外鍋 1 杯水,蒸到跳起來。','Panci luar 1 gelas air, kukus sampai tombol naik.'],
+  ['蛤蜊沒開的不要吃。','Kerang yang tidak terbuka jangan dimakan.']],
+ note:['絲瓜自己會出水,湯很甜很自然,不用加很多鹽。','Oyong keluar air sendiri, kuahnya manis alami.']},
+
+{key:'clamsoup', zh:'薑絲蛤蜊湯', py:'jiāng sī gé lí tāng', id:'Sup Kerang Jahe', cups:0, tags:[],
+ ings:[['clam','400g (泡鹽水吐沙) / rendam air garam'],['ginger','6 片切細絲 / 6 iris, potong halus'],['scallion','1 根'],['salt','1 小撮(先試味道) / sejumput']],
+ steps:[
+  ['蛤蜊泡鹽水 1 小時吐沙,搓洗乾淨。','Rendam kerang di air garam 1 jam, gosok dan cuci bersih.'],
+  ['鍋中加 4 碗水和薑絲,煮滾。','Rebus 4 mangkuk air dengan irisan jahe.'],
+  ['放入蛤蜊,開口就馬上關火,不要煮太久。','Masukkan kerang. Begitu terbuka, langsung matikan api. Jangan terlalu lama.'],
+  ['先喝一口試味道,不夠鹹才加一小撮鹽。','Cicipi dulu. Tambah sejumput garam hanya kalau kurang asin.'],
+  ['撒上蔥花。沒開的蛤蜊丟掉。','Taburi daun bawang. Buang kerang yang tidak terbuka.']],
+ note:['蛤蜊本身就鹹,常常不用加鹽,最適合老人的少鹽湯。','Kerang sudah asin alami, sering tidak perlu garam. Sup paling cocok untuk lansia.']},
+
+{key:'luro', zh:'滷肉・滷蛋・豆乾・海帶', py:'lǔ ròu', id:'Semur Babi, Telur & Tahu Kering ⚠️', cups:2, tags:['pork'],
+ ings:[['porklean','600g'],['egg','4 顆(先煮熟剝殼) / 4 butir rebus, kupas'],['doufugan','6 片 / 6 potong'],['kelp','8 個 / 8 buah'],['soy','6 大匙 (90ml)'],['sugar','1.5 大匙'],['ginger','4 片'],['garlic','4 瓣']],
+ steps:[
+  ['豬肉切塊,用滾水燙 2 分鐘,水倒掉。','Potong daging, rebus 2 menit dengan air mendidih, buang air.'],
+  ['全部放入內鍋:豬肉、水煮蛋、豆乾、海帶、薑、蒜。','Masukkan semua ke panci dalam: daging, telur rebus, tahu kering, rumput laut, jahe, bawang putih.'],
+  ['加醬油、糖,加水蓋過材料。','Tambah kecap asin dan gula, lalu air sampai semua terendam.'],
+  ['外鍋 2 杯水,按開關,煮到跳起來。','Panci luar 2 gelas air. Tekan tombol, masak sampai tombol naik.'],
+  ['再悶 30 分鐘更入味。煮一鍋可以吃兩餐。','Diamkan 30 menit lagi. Sekali masak cukup untuk dua kali makan.']],
+ note:['⚠️ 此菜含豬肉。只能用貼紅色標籤的「豬肉專用」鍋子、砧板、刀,煮完分開清洗。如果妳不方便煮這道菜,告訴雇主就好,沒關係。','⚠️ Masakan ini mengandung BABI. Hanya pakai panci, talenan, dan pisau berlabel MERAH, cuci terpisah. Jika Anda tidak bersedia memasaknya, beri tahu majikan — tidak apa-apa.'],warn:true},
+
+{key:'mousepork', zh:'清蒸老鼠肉(豬)', py:'qīng zhēng lǎo shǔ ròu', id:'Babi Kukus Garam & Lada ⚠️', cups:2, tags:['pork'],
+ ings:[['porkshank','1 塊 (約300g) / 1 potong'],['salt','1 小匙'],['whitepepper','半小匙'],['ginger','3 片']],
+ steps:[
+  ['豬肉沖洗,用紙巾擦乾。','Bilas daging, keringkan dengan tisu.'],
+  ['整塊肉抹上鹽和白胡椒粉,放薑片,醃 15 分鐘。','Lumuri seluruh daging dengan garam dan lada putih, taruh irisan jahe, diamkan 15 menit.'],
+  ['放在盤子上,外鍋 2 杯水,蒸到跳起來。','Taruh di piring. Panci luar 2 gelas air, kukus sampai tombol naik.'],
+  ['用筷子插肉最厚的地方,流出的湯是透明的就是熟了;還是紅的就外鍋再加半杯水蒸一次。','Tusuk bagian paling tebal dengan sumpit. Kalau cairannya bening = matang. Kalau masih merah, tambah setengah gelas air di panci luar dan kukus lagi.'],
+  ['放 10 分鐘再切薄片。','Diamkan 10 menit, lalu iris tipis.']],
+ note:['⚠️ 此菜含豬肉,規則和滷肉一樣:只用紅色標籤的專用鍋具。「老鼠肉」是豬後腿的一塊嫩肉,全聯不一定有;買不到時用全聯的「豬腱肉」代替,一樣軟嫩。','⚠️ Mengandung BABI — aturan sama: hanya alat masak berlabel MERAH. "Lao shu rou" = daging empuk dari paha belakang babi. Kalau tidak ada di PX Mart, ganti dengan "zhu jian rou" (daging betis babi), sama empuknya.'],warn:true},
+
+/* ---- 植物蛋白 Protein nabati (tahu) ---- */
+{key:'coldtofu', zh:'涼拌嫩豆腐', py:'liáng bàn nèn dòu fǔ', id:'Tahu Sutra Dingin', cups:0, tags:[],
+ ings:[['tofu','1 盒 / 1 kotak'],['soy','1 大匙'],['scallion','蔥花少許'],['ginger','一點點薑末(可不加) / sedikit (boleh tidak)']],
+ steps:[
+  ['嫩豆腐從盒子倒出來,放在盤子上。','Keluarkan tahu sutra dari kotak, taruh di piring.'],
+  ['淋上醬油。','Siram dengan kecap asin.'],
+  ['撒蔥花(和薑末)。','Taburi daun bawang (dan jahe cincang).'],
+  ['完成!不用開火。','Selesai! Tidak perlu masak.']],
+ note:['最快的一道菜,夏天很開胃,豆腐很軟老人好吞。','Masakan paling cepat. Tahu lembut, mudah ditelan.']},
+
+{key:'braisedtofu', zh:'醬燒板豆腐', py:'jiàng shāo dòu fǔ', id:'Tahu Masak Kecap', cups:0, tags:[],
+ ings:[['firmtofu','1 塊 (約300g) / 1 potong'],['soy','1.5 大匙'],['sugar','半小匙'],['scallion','1 根'],['oil','1 大匙']],
+ steps:[
+  ['板豆腐切厚片,用紙巾壓乾水分。','Potong tahu tebal, tekan dengan tisu sampai kering.'],
+  ['鍋子加油,豆腐兩面煎到金黃。','Goreng tahu dengan sedikit minyak sampai kedua sisi kuning keemasan.'],
+  ['加醬油、糖、半碗水,小火煮 3 分鐘。','Tambah kecap asin, gula, setengah mangkuk air. Masak api kecil 3 menit.'],
+  ['撒蔥花。','Taburi daun bawang.']],
+ note:['豆腐煮過更軟更入味。','Tahu jadi lebih lembut dan gurih setelah dimasak.']},
+
+{key:'misosoup', zh:'味噌豆腐湯', py:'wèi zēng dòu fǔ tāng', id:'Sup Miso Tahu', cups:0, tags:[],
+ ings:[['tofu','1 盒切小塊 / 1 kotak, potong dadu'],['miso','1 大匙 / 1 sendok makan'],['wakame','1 小撮 / sejumput'],['scallion','蔥花少許']],
+ steps:[
+  ['鍋中煮 4 碗水,放入豆腐塊和海帶芽,煮 3 分鐘。','Rebus 4 mangkuk air, masukkan tahu dan wakame, masak 3 menit.'],
+  ['關小火。味噌放在湯勺裡,泡進湯,用筷子慢慢化開。','Kecilkan api. Taruh miso di sendok sup, celupkan, larutkan pelan-pelan dengan sumpit.'],
+  ['味噌化開就關火,不要煮滾。','Matikan api setelah miso larut. Jangan sampai mendidih lagi.'],
+  ['撒蔥花。','Taburi daun bawang.']],
+ note:['味噌已經有鹹味,不用再加鹽。','Miso sudah asin, tidak perlu tambah garam lagi.']},
+
+{key:'braiseddougan', zh:'滷豆乾海帶(無豬肉)', py:'lǔ dòu gān hǎi dài', id:'Tahu Kering & Rumput Laut Kecap', cups:1, tags:[],
+ ings:[['doufugan','8 片 / 8 potong'],['kelp','10 個 / 10 buah'],['soy','3 大匙'],['sugar','1 小匙'],['ginger','2 片'],['garlic','2 瓣']],
+ steps:[
+  ['豆乾沖洗,對切。','Bilas tahu kering, potong dua.'],
+  ['豆乾、海帶、薑、蒜放內鍋,加醬油、糖,加水蓋過材料。','Masukkan semua ke panci dalam dengan kecap asin, gula, dan air sampai terendam.'],
+  ['外鍋 1 杯水,按開關,煮到跳起來。','Panci luar 1 gelas air. Masak sampai tombol naik.'],
+  ['泡在滷汁裡放涼更入味。','Rendam di kuahnya sampai dingin supaya lebih meresap.']],
+ note:['這是無豬肉版的滷味,和滷肉分開煮、用一般鍋具就可以。','Ini versi TANPA babi, dimasak terpisah dengan alat masak biasa.']},
+
+/* ---- 青菜 Sayur ---- */
+{key:'veg', zh:'燙青菜', py:'tàng qīng cài', id:'Sayur Rebus', cups:0, tags:[],
+ ings:[['anyveg','1 把 (約300g) / 1 ikat'],['garlic','2 瓣 / 2 siung'],['soy','1 小匙 (5ml)'],['salt','1 小撮 / sejumput']],
+ steps:[
+  ['青菜洗 2 次,切掉硬的梗,切成 5 公分。','Cuci sayur 2 kali, buang batang keras, potong 5 cm.'],
+  ['煮一鍋水,水滾加一小撮鹽。','Rebus air. Setelah mendidih, masukkan sejumput garam.'],
+  ['放入青菜,煮 2–3 分鐘(老人吃的煮 4 分鐘,比較軟)。','Masukkan sayur, rebus 2–3 menit (untuk lansia 4 menit supaya lembut).'],
+  ['撈起來瀝乾水。','Angkat dan tiriskan.'],
+  ['淋上醬油和蒜末,拌一拌。','Siram kecap asin dan bawang putih cincang. Aduk.']],
+ note:['每天換不同的青菜,做法都一樣。菜在全聯蔬菜區。','Ganti sayur berbeda setiap hari, cara masak sama. Sayur ada di rak sayuran PX Mart.']},
+
+{key:'cabbage', zh:'清炒高麗菜', py:'qīng chǎo gāo lì cài', id:'Tumis Kol', cups:0, tags:[],
+ ings:[['cabbage','半顆 (約400g) / setengah buah'],['garlic','3 瓣'],['salt','半小匙'],['oil','1 大匙']],
+ steps:[
+  ['高麗菜剝開洗乾淨,用手撕成小片。','Cuci kol, sobek dengan tangan menjadi potongan kecil.'],
+  ['鍋子加油,先炒蒜末,香味出來。','Tumis bawang putih dengan minyak sampai harum.'],
+  ['放入高麗菜,加 3 大匙水,炒到軟(約 5 分鐘)。','Masukkan kol, tambah 3 sendok air, tumis sampai lembut (5 menit).'],
+  ['加鹽,拌勻。','Tambah garam, aduk rata.']],
+ note:['高麗菜要炒久一點、炒到軟,老人才好咬。','Kol harus lembut supaya lansia mudah mengunyah.']},
+
+{key:'eggplant', zh:'蒸茄子', py:'zhēng qié zi', id:'Terong Kukus', cups:1, tags:[],
+ ings:[['anyveg','茄子 2 條 / 2 buah terong'],['soy','1 大匙'],['garlic','2 瓣切末'],['scallion','蔥花少許']],
+ steps:[
+  ['茄子洗乾淨,切長段再對半切。','Cuci terong, potong panjang lalu belah dua.'],
+  ['放在盤子上,外鍋 1 杯水,蒸到跳起來。','Taruh di piring. Panci luar 1 gelas air, kukus sampai tombol naik.'],
+  ['淋上醬油和蒜末,撒蔥花。','Siram kecap asin dan bawang putih cincang, taburi daun bawang.']],
+ note:['蒸的茄子非常軟,老人好吞,也不用油。','Terong kukus sangat lembut, mudah ditelan, tanpa minyak.']},
+
+{key:'cauliflower', zh:'蒸花椰菜', py:'zhēng huā yē cài', id:'Brokoli / Kembang Kol Kukus', cups:1, tags:[],
+ ings:[['cauliflower','半顆 (約300g) / setengah buah'],['soy','1 大匙'],['garlic','2 瓣切末'],['salt','1 小撮']],
+ steps:[
+  ['花椰菜切小朵,泡水 10 分鐘再洗乾淨。','Potong kecil-kecil, rendam air 10 menit, lalu cuci bersih.'],
+  ['放在盤子上,撒一小撮鹽。','Taruh di piring, taburi sejumput garam.'],
+  ['外鍋 1 杯水,蒸到跳起來。','Panci luar 1 gelas air, kukus sampai tombol naik.'],
+  ['淋醬油和蒜末。','Siram kecap asin dan bawang putih cincang.']],
+ note:['蒸的花椰菜很軟不用油。莖太硬的部分切掉。','Sangat lembut tanpa minyak. Buang bagian batang yang keras.']},
+
+/* ---- 白飯 ---- */
+{key:'rice', zh:'電鍋白飯', py:'diàn guō bái fàn', id:'Nasi Putih', cups:1, tags:[],
+ ings:[['rice','2 杯 (量米杯) / 2 gelas takar']],
+ steps:[
+  ['白米洗 2–3 次,水倒掉。','Cuci beras 2–3 kali, buang airnya.'],
+  ['內鍋加水:米 2 杯,水就 2 杯(跟米一樣高再多一點)。','Panci dalam: 2 gelas beras + 2 gelas air.'],
+  ['外鍋加 1 杯水,放入內鍋,蓋上蓋子。','Isi 1 gelas air di panci luar, masukkan panci dalam, tutup.'],
+  ['按下開關,等開關跳起來,再悶 10 分鐘。','Tekan tombol. Tunggu tombol naik, diamkan 10 menit.'],
+  ['打開用飯匙鬆飯。','Buka dan aduk nasi dengan sendok nasi.']],
+ note:null},
+];
+
+/* ================= BASIC PAGES ================= */
+function cupsSVG(n){
+  let s='';
+  for(let i=0;i<Math.ceil(n);i++)s+='<svg width="14" height="16" viewBox="0 0 14 16"><path d="M2 1h10l-1.5 14h-7z" fill="none" stroke="#3E7C6B" stroke-width="1.8"/><path d="M3 6h8" stroke="#3E7C6B" stroke-width="1.4"/></svg>';
+  return s;
+}
+
+function recipePage(r){
+  const pork=r.tags.includes('pork');
+  const porkbadge=pork?'<span class="badge pork">⚠️ 含豬肉 Mengandung BABI</span>':'';
+  const cups=r.cups>0?`<span class="cups">外鍋 panci luar ${cupsSVG(r.cups)} ${r.cups===0.5?'半':r.cups} 杯 gelas</span>`:'';
+  return `<section class="page" id="pg-${r.key}" data-nav="recipe" data-zh="${r.zh}" data-id="${r.id}" data-pork="${pork}">
+    <div class="pg-head">
+      <div>
+        <div class="zh">${r.zh}</div>
+        <div class="sub"><span class="py">${r.py}</span> · <span class="id-text">${r.id}</span></div>
+      </div>
+      <div class="badges">${porkbadge}${cups}</div>
+    </div>
+    <div class="sec-t">食材 <small>Bahan-bahan</small></div>
+    <table class="ing">${r.ings.map(([k,amt])=>{const g=ING[k];return `<tr><td><b>${g.zh}</b> <span class="py">${g.py}</span><br><span class="id-text">${g.id}</span></td><td class="amt">${amt}</td></tr>`}).join('')}</table>
+    <div class="sec-t">步驟 <small>Cara Memasak</small></div>
+    <ol class="steps">${r.steps.map(([zh,id])=>`<li><div><span class="zh">${zh}</span><span class="id-text">${id}</span></div></li>`).join('')}</ol>
+    ${r.note?`<div class="note ${r.warn?'warn':''}"><b>💡 </b>${r.note[0]}${r.note[1]?`<br><span class="id-text">${r.note[1]}</span>`:''}</div>`:''}
+    <div class="foot"><span>家庭幫傭上工手冊 · Buku Panduan Memasak</span><span>${r.zh} · ${r.id}</span></div>
+  </section>`;
+}
+
+const VOCAB=[
+ ['你好','nǐ hǎo','halo'],['謝謝','xiè xie','terima kasih'],['早安','zǎo ān','selamat pagi'],
+ ['吃飯了','chī fàn le','waktunya makan'],['好吃嗎?','hǎo chī ma','enak tidak?'],['喝水','hē shuǐ','minum air'],
+ ['吃藥','chī yào','minum obat'],['餓不餓?','è bú è','lapar tidak?'],['口渴嗎?','kǒu kě ma','haus tidak?'],
+ ['上廁所','shàng cè suǒ','ke toilet'],['洗澡','xǐ zǎo','mandi'],['睡覺','shuì jiào','tidur'],
+ ['起床','qǐ chuáng','bangun'],['休息','xiū xí','istirahat'],['散步','sàn bù','jalan-jalan'],
+ ['要去哪裡?','yào qù nǎ lǐ','mau ke mana?'],['要做什麼?','yào zuò shén me','mau apa?'],['等一下','děng yí xià','tunggu sebentar'],
+ ['慢慢走','màn màn zǒu','jalan pelan-pelan'],['坐下','zuò xià','silakan duduk'],['小心','xiǎo xīn','hati-hati'],
+ ['痛不痛?','tòng bú tòng','sakit tidak?'],['會冷嗎?','huì lěng ma','dingin tidak?'],['會熱嗎?','huì rè ma','panas tidak?'],
+ ['看醫生','kàn yī shēng','ke dokter'],['醫院','yī yuàn','rumah sakit'],['回家','huí jiā','pulang'],
+ ['出去','chū qù','keluar'],['沒關係','méi guān xi','tidak apa-apa'],['對不起','duì bù qǐ','maaf'],
+ ['要 / 不要','yào / bú yào','mau / tidak mau'],['好 / 不好','hǎo / bù hǎo','baik / tidak baik'],['豬肉(我不吃)','zhū ròu','daging babi (saya tidak makan)'],
+ ['鹽','yán','garam'],['糖','táng','gula'],['醬油','jiàng yóu','kecap asin'],
+ ['洗','xǐ','cuci'],['切','qiē','potong'],['蒸','zhēng','kukus'],
+ ['煮','zhǔ','rebus / masak'],['電鍋','diàn guō','penanak nasi'],['冰箱','bīng xiāng','kulkas'],
+];
+
+function basicPages(){
+return `
+<!-- 電鍋教學 -->
+<section class="page" id="pg-cooker" data-nav="basic" data-zh="大同電鍋教學" data-id="Cara Pakai Penanak Nasi Tatung">
+  <div class="pg-head"><div><div class="zh">大同電鍋怎麼用</div>
+  <div class="sub"><span class="py">diàn guō</span> · <span class="id-text">Cara Menggunakan Penanak Nasi Tatung</span></div></div></div>
+
+  <div class="cook-grid">
+    <div class="cook-card"><div class="t">① 電鍋有兩個鍋</div>
+    <b>外鍋</b>(固定的)放水,<b>內鍋</b>(可拿出來)放食物。<br>
+    <span class="id-text"><b>Panci luar</b> (menempel) diisi AIR. <b>Panci dalam</b> (bisa diangkat) diisi MAKANAN.</span></div>
+    <div class="cook-card"><div class="t">② 外鍋的水 = 時間</div>
+    水越多,煮越久。開關自己會跳起來,不用看時間。<br>
+    <span class="id-text">Makin banyak air = makin lama. Tombol akan naik sendiri saat selesai.</span></div>
+    <div class="cook-card"><div class="t">③ 使用步驟</div>
+    外鍋加水 → 放內鍋或盤子 → 蓋蓋子 → 按下開關 → 等跳起來。<br>
+    <span class="id-text">Isi air panci luar → masukkan makanan → tutup → tekan tombol → tunggu tombol naik.</span></div>
+    <div class="cook-card"><div class="t">④ 安全 Keamanan</div>
+    開蓋子小心蒸氣,很燙!用乾布拿內鍋。外鍋沒水不可以按開關。<br>
+    <span class="id-text">Hati-hati uap panas saat buka tutup! Pakai lap kering. Jangan tekan tombol kalau panci luar kosong.</span></div>
+  </div>
+
+  <div class="sec-t">外鍋水量對照表 <small>Takaran air panci luar</small></div>
+  <table class="watertbl">
+    <tr><th>外鍋水 Air panci luar</th><th>時間 Waktu</th><th>適合 Cocok untuk</th></tr>
+    <tr><td>${cupsSVG(1)} 1 杯 (160ml)</td><td>約 15–20 分鐘</td><td>蒸魚、蒸蛋、蒸菜 / ikan, telur, sayur kukus</td></tr>
+    <tr><td>${cupsSVG(2)} 2 杯</td><td>約 30–40 分鐘</td><td>煮飯加量、煮湯、滷 / sup, semur</td></tr>
+    <tr><td>${cupsSVG(3)} 3 杯</td><td>約 50–60 分鐘</td><td>大塊肉 / daging potongan besar</td></tr>
+  </table>
+  <div class="note" style="margin-top:12px"><b>「杯」= 量米杯</b>(電鍋附的塑膠杯,約 160ml),不是喝水的杯子。<br>
+  <span class="id-text">"Gelas" = gelas takar beras (gelas plastik kecil dari penanak nasi, sekitar 160ml), bukan gelas minum.</span></div>
+  <div class="note warn" style="margin-top:8px"><b>⚠️ 豬肉規則 Aturan Babi:</b>貼紅色標籤的鍋子、砧板、刀是「豬肉專用」,只用來煮豬肉;其他廚具不碰豬肉。<br>
+  <span class="id-text">Alat masak berlabel MERAH khusus untuk masakan babi saja; alat lain tidak dipakai untuk babi. Jika Anda tidak bersedia menyentuh babi, beri tahu majikan — tidak apa-apa.</span></div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>大同電鍋教學</span></div>
+</section>
+
+<!-- 常用中文 -->
+<section class="page" id="pg-vocab" data-nav="basic" data-zh="常用中文" data-id="Kosakata Sehari-hari">
+  <div class="pg-head"><div><div class="zh">常用中文</div>
+  <div class="sub"><span class="id-text">Kosakata Sehari-hari: bicara dengan kakek-nenek & di dapur</span> · 每天學 3 個 / belajar 3 kata sehari</div></div></div>
+  <div class="vocab">${VOCAB.map(([zh,py,id])=>`<div class="vcard"><span class="zh">${zh}</span><span class="py">${py}</span><span class="id-text">${id}</span></div>`).join('')}</div>
+  <div class="note" style="margin-top:14px"><b>拼音怎麼念:</b>拼音用英文字母,照印尼文的讀法唸,聲調(á ǎ à)先不用管,慢慢學。<br>
+  <span class="id-text">Pinyin dibaca seperti ejaan Indonesia. Tanda nada (á ǎ à) bisa dipelajari pelan-pelan.</span></div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>常用中文 Kosakata</span></div>
+</section>
+
+<!-- 採購清單 -->
+<section class="page" id="pg-shop" data-nav="basic" data-zh="全聯採購清單" data-id="Daftar Belanja PX Mart">
+  <div class="pg-head"><div><div class="zh">全聯採購清單</div>
+  <div class="sub"><span class="id-text">Daftar Belanja di PX Mart (supermarket "全聯")</span><span class="screen-only"> · 依左邊勾選的菜自動整理</span></div></div></div>
+  <div id="shoplist"></div>
+  <div class="note" style="margin-top:auto"><b>看不到想買的東西?</b>拿這張清單給店員看,指著中文字就可以。<br>
+  <span class="id-text">Kalau tidak menemukan barang, tunjukkan daftar ini ke pegawai toko dan tunjuk tulisan Mandarin-nya.</span></div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>採購清單 Daftar Belanja</span></div>
+</section>
+
+<!-- 七日循環菜單 -->
+<section class="page" id="pg-rota" data-nav="basic" data-zh="七日循環菜單" data-id="Menu Siklus 7 Hari">
+  <div class="pg-head"><div><div class="zh">七日循環菜單</div>
+  <div class="sub"><span class="id-text">Menu Siklus 7 Hari</span> · 每週重複同樣的菜單 / menu yang sama diulang setiap minggu</div></div></div>
+  <table class="rota">
+    <tr><th style="width:70px"></th><th>早餐 <span style="font-weight:400;font-style:italic">Sarapan</span></th><th>午餐 <span style="font-weight:400;font-style:italic">Makan Siang</span></th><th>晚餐 <span style="font-weight:400;font-style:italic">Makan Malam</span></th></tr>
+    <tr><td class="day">星期一<span class="id-text">Senin</span></td>
+      <td><div class="cell" contenteditable="true">燕麥牛奶<span class="id-text">Havermut susu</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・清蒸魚(鯛魚片)・涼拌嫩豆腐・燙青菜<span class="id-text">Nasi, ikan kukus, tahu dingin, sayur rebus</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・洋蔥炒牛肉・醬燒板豆腐・清炒高麗菜<span class="id-text">Nasi, tumis sapi, tahu kecap, tumis kol</span></div></td></tr>
+    <tr><td class="day">星期二<span class="id-text">Selasa</span></td>
+      <td><div class="cell" contenteditable="true">蛋餅<span class="id-text">Dadar gulung telur</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・滷肉・滷蛋・豆乾・海帶・燙青菜 ⚠️<span class="id-text">Nasi, semur babi ⚠️, telur, tahu kering, sayur</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・水煮蝦・味噌豆腐湯・燙青菜<span class="id-text">Nasi, udang rebus, sup miso tahu, sayur rebus</span></div></td></tr>
+    <tr><td class="day">星期三<span class="id-text">Rabu</span></td>
+      <td><div class="cell" contenteditable="true">燕麥牛奶<span class="id-text">Havermut susu</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・絲瓜蛤蜊・涼拌嫩豆腐・清炒高麗菜<span class="id-text">Nasi, oyong kerang, tahu dingin, tumis kol</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・滷肉(第二餐)・豆乾・燙青菜 ⚠️<span class="id-text">Nasi, semur babi (sisa) ⚠️, tahu kering, sayur</span></div></td></tr>
+    <tr><td class="day">星期四<span class="id-text">Kamis</span></td>
+      <td><div class="cell" contenteditable="true">蛋餅<span class="id-text">Dadar gulung telur</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・香煎虱目魚肚・滷豆乾海帶・燙青菜<span class="id-text">Nasi, bandeng goreng, tahu kering kecap, sayur</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・青椒炒牛肉・涼拌嫩豆腐・蒸茄子<span class="id-text">Nasi, tumis sapi paprika hijau, tahu dingin, terong kukus</span></div></td></tr>
+    <tr><td class="day">星期五<span class="id-text">Jumat</span></td>
+      <td><div class="cell" contenteditable="true">燕麥牛奶<span class="id-text">Havermut susu</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・清蒸魚(鱸魚片)・味噌豆腐湯・清炒高麗菜<span class="id-text">Nasi, ikan kakap kukus, sup miso, tumis kol</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・薑絲蛤蜊湯・醬燒板豆腐・燙青菜<span class="id-text">Nasi, sup kerang jahe, tahu kecap, sayur rebus</span></div></td></tr>
+    <tr><td class="day">星期六<span class="id-text">Sabtu</span></td>
+      <td><div class="cell" contenteditable="true">蛋餅<span class="id-text">Dadar gulung telur</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・清蒸老鼠肉・滷豆乾海帶・燙青菜 ⚠️<span class="id-text">Nasi, babi kukus ⚠️, tahu kering kecap, sayur rebus</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・清蒸魚(虱目魚肚,挑刺)・涼拌嫩豆腐・蒸茄子<span class="id-text">Nasi, bandeng kukus (buang duri), tahu dingin, terong</span></div></td></tr>
+    <tr><td class="day">星期日<span class="id-text">Minggu</span></td>
+      <td><div class="cell" contenteditable="true">燕麥牛奶<span class="id-text">Havermut susu</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・水煮蝦・醬燒板豆腐・蒸花椰菜<span class="id-text">Nasi, udang rebus, tahu kecap, brokoli kukus</span></div></td>
+      <td><div class="cell" contenteditable="true">白飯・清蒸魚(鯛魚片)・味噌豆腐湯・燙青菜<span class="id-text">Nasi, ikan kukus, sup miso tahu, sayur rebus</span></div></td></tr>
+  </table>
+  <div class="note" style="margin-top:12px"><b>💡 </b>每餐三樣菜:一份魚或肉(魚為主) + 一份豆腐 + 一份青菜,配白飯。燙青菜每天換一種(地瓜葉→菠菜→青江菜→空心菜→莧菜)。滷肉(⚠️豬肉)煮一鍋吃兩餐,第二餐加熱就好。蕃茄炒蛋、紅蘿蔔炒蛋、蒸蛋是「加菜」用,老人胃口好時多加一道。<br>
+  <span class="id-text">Setiap makan 3 lauk: 1 ikan/daging + 1 tahu + 1 sayur + nasi. Ganti jenis sayur setiap hari. Semur babi (⚠️) sekali masak untuk dua kali makan. Masakan telur adalah lauk TAMBAHAN saat nafsu makan bagus.</span></div>
+  <div class="note screen-only" style="margin-top:8px"><b>給雇主(此段不會印出):</b>畫面上可直接點格子修改菜色再列印。</div>
+  <div class="foot"><span>家庭幫傭上工手冊</span><span>七日循環菜單 Menu Siklus</span></div>
+</section>`;
+}
+
+/* ================= RENDER ================= */
+const pagesEl=document.getElementById('pages');
+pagesEl.innerHTML=basicPages()+RECIPES.map(recipePage).join('');
+
+const navBasic=document.getElementById('nav-basic');
+const CAT={oatmeal:'nav-bf',danbing:'nav-bf',fish:'nav-animal',shrimp:'nav-animal',beefonion:'nav-animal',greenpepperbeef:'nav-animal',milkfish:'nav-animal',mousepork:'nav-animal',tomatoegg:'nav-animal',carrotegg:'nav-animal',steamegg:'nav-animal',loofah:'nav-animal',clamsoup:'nav-animal',luro:'nav-animal',coldtofu:'nav-plant',braisedtofu:'nav-plant',misosoup:'nav-plant',braiseddougan:'nav-plant',veg:'nav-veg',cabbage:'nav-veg',eggplant:'nav-veg',cauliflower:'nav-veg',rice:'nav-veg'};
+document.querySelectorAll('.page').forEach(pg=>{
+  const label=document.createElement('label');label.className='chk';
+  const pork=pg.dataset.pork==='true';
+  label.innerHTML=`<input type="checkbox" checked data-target="${pg.id}"><span>${pg.dataset.zh}<br><span style="font-size:11px;font-style:italic;color:#9CC4B5">${pg.dataset.id}</span>${pork?'<span class="tag pork">⚠️豬肉</span>':''}</span>`;
+  const key=pg.id.replace('pg-','');
+  const target=pg.dataset.nav==='basic'?navBasic:document.getElementById(CAT[key]||'nav-veg');
+  target.appendChild(label);
+});
+document.querySelectorAll('.chk input').forEach(cb=>cb.addEventListener('change',update));
+function setAll(v){document.querySelectorAll('.chk input').forEach(cb=>cb.checked=v);update();}
+function update(){
+  document.querySelectorAll('.chk input').forEach(cb=>{
+    document.getElementById(cb.dataset.target).classList.toggle('hidden',!cb.checked);
+  });
+  renderShop();
+}
+
+/* shopping list aggregation */
+function renderShop(){
+  const byAisle={};
+  const pantry=['鹽','糖','醬油','橄欖油(或芥花油)','薑','蒜頭','蔥'];
+  RECIPES.forEach(r=>{
+    const cb=document.querySelector(`input[data-target="pg-${r.key}"]`);
+    if(!cb||!cb.checked)return;
+    r.ings.forEach(([k,amt])=>{
+      const g=ING[k];
+      if(pantry.includes(g.zh)){
+        (byAisle['常備(家裡通常有)']=byAisle['常備(家裡通常有)']||{});
+        (byAisle['常備(家裡通常有)'][k]=byAisle['常備(家裡通常有)'][k]||[]).push(null);return;
+      }
+      (byAisle[g.aisle]=byAisle[g.aisle]||{});
+      (byAisle[g.aisle][k]=byAisle[g.aisle][k]||[]).push(`${amt.split('/')[0].trim()}(${r.zh})`);
+    });
+  });
+  let html='';
+  const order=['蔬菜','冷藏','生鮮(冷藏)','乾貨','常備(家裡通常有)'];
+  order.forEach(a=>{
+    if(!byAisle[a])return;
+    html+=`<div class="aisle">${a}</div><ul class="shop">`;
+    Object.entries(byAisle[a]).forEach(([k,uses])=>{
+      const g=ING[k];
+      const detail=uses[0]===null?'<span class="who">確認家裡還有沒有 / cek stok di rumah</span>':`<span class="who">${uses.join(' + ')}</span>`;
+      html+=`<li><span class="box"></span><div><b>${g.zh}</b> <span class="py">${g.py}</span> · <span class="id-text">${g.id}</span><br>${detail}</div></li>`;
+    });
+    html+='</ul>';
+  });
+  document.getElementById('shoplist').innerHTML=html||'<p style="color:var(--sub)">左邊先勾選菜色,清單會自動整理。</p>';
+}
+update();
+</script>
+</body>
+</html>
