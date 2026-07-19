@@ -180,18 +180,26 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
   .main{padding:0;gap:0;display:block;}
   .page{box-shadow:none;width:210mm;height:296mm;page-break-after:always;overflow:hidden;}
 
-  /* 常用中文頁:42 張詞卡擠進 A4 → 4 欄 + 緊湊卡片 */
-  #pg-vocab .vocab{grid-template-columns:repeat(4,1fr);gap:4px;}
-  #pg-vocab .vcard{padding:3px 6px;border-width:1px;}
-  #pg-vocab .vcard .zh{font-size:15px;}
-  #pg-vocab .vcard .py{font-size:9px;letter-spacing:0;}
-  #pg-vocab .vcard .id-text{font-size:10.5px;}
-  #pg-vocab .sec-t,#pg-vocab .note{font-size:11.5px;}
-  #pg-vocab .note{padding:7px 10px;}
+  /* 常用中文頁:42 張詞卡擠進 A4 → 4 欄 + 緊湊卡片(拼音/印尼文同行) */
+  #pg-vocab .vocab{grid-template-columns:repeat(4,1fr);gap:3px;}
+  #pg-vocab .vcard{padding:2px 5px;border-width:1px;line-height:1.2;}
+  #pg-vocab .vcard .zh{font-size:14px;}
+  #pg-vocab .vcard .py{display:inline;font-size:8.5px;letter-spacing:0;}
+  #pg-vocab .vcard .py::after{content:' ';}
+  #pg-vocab .vcard .id-text{display:inline;font-size:9.5px;}
+  #pg-vocab .sec-t,#pg-vocab .note{font-size:11px;}
+  #pg-vocab .note{padding:6px 10px;margin-top:8px !important;}
+  #pg-vocab .pg-head{padding-bottom:6px;margin-bottom:8px;}
+  #pg-vocab .pg-head .zh{font-size:24px;}
+  #pg-vocab .pg-head .sub{font-size:11px;}
 
   /* 食譜頁微縮,確保邊緣頁(如滷肉)塞進 A4 */
-  .page .note{padding:8px 12px;font-size:12px;line-height:1.5;}
-  table.ing td{padding:4px;}
+  .page .note{padding:7px 11px;font-size:11.5px;line-height:1.45;}
+  .page .steps li{padding:6px 0;}
+  .page .steps .zh{font-size:15px;}
+  .page .steps .id-text{font-size:12.5px;}
+  table.ing{font-size:13px;}
+  table.ing td{padding:3px 4px;}
 
   /* 採購清單頁:允許跨頁(內容動態,不固定高度) */
   #pg-shop{height:auto;min-height:296mm;overflow:visible;}
