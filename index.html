@@ -791,24 +791,24 @@ const SCHED_BASE=[
  ['08:00','早餐時間 + 早上吃藥 💊','Sarapan + obat pagi 💊'],
  ['08:30','收拾餐具 + 掃地拖地','Bersihkan piring + sapu & pel lantai'],
  ['09:30','陪長輩散步(請攙扶,慢慢走)','Jalan-jalan dengan lansia (pegangi, pelan-pelan)'],
- ['11:30','準備中餐','Siapkan makan siang'],
+ ['10:30','準備中餐(備料、洗菜、煮飯)','Siapkan makan siang (siapkan bahan, cuci sayur, masak nasi)'],
  ['12:00','中餐時間 + 中午吃藥 💊','Makan siang + obat siang 💊'],
  ['12:30','收拾餐具','Bersihkan piring'],
  ['13:00','午休(長輩休息,幫傭可備料)','Istirahat siang (lansia tidur, boleh siapkan bahan)'],
- ['15:00','下午茶點心時間','Waktu camilan sore'],
- ['17:00','準備晚餐','Siapkan makan malam'],
+ ['14:30','下午茶點心時間','Waktu camilan sore'],
+ ['16:00','準備晚餐(備料、煮飯、做菜)','Siapkan makan malam (siapkan bahan, masak nasi, masak)'],
  ['18:00','晚餐時間 + 晚上吃藥 💊','Makan malam + obat malam 💊'],
  ['18:30','收拾餐具、整理廚房','Bersihkan piring & dapur'],
  ['20:00','長輩休息時間','Waktu istirahat lansia'],
  ['21:00','睡前吃藥 💊','Obat sebelum tidur 💊'],
  ['21:30','長輩就寢','Lansia tidur'],
 ];
-/* 當日 15:00 的替換任務(洗衣/大掃除/備料) */
+/* 當日 14:30 的替換任務(洗衣/大掃除/備料) */
 const SCHED_15_DIFF={
  '星期二':'洗衣服、曬衣服 (cuci baju, jemur baju)',
  '星期五':'洗衣服、曬衣服 (cuci baju, jemur baju)',
  '星期六':'大掃除:廁所、廚房深度清潔 + 收衣服 (bersih besar: toilet & dapur, lipat baju)',
- '星期日':'備下一週食材、整理冰箱 (siapkan bahan minggu depan, berishkan kulkas)',
+ '星期日':'備下一週食材、整理冰箱 (siapkan bahan minggu depan, bersihkan kulkas)',
 };
 const SCHEDULE=[
  {day:'星期一',id:'Senin'},
@@ -964,9 +964,9 @@ ${SCHEDULE.map((s,i)=>{
   <table class="sched-table">
     <tr><th class="time">時間 Waktu</th><th>任務 Tugas <span style="font-weight:400;font-style:italic">(中)</span></th><th class="id-col">Tugas <span style="font-weight:400;font-style:italic">(Indonesia)</span></th></tr>
     ${SCHED_BASE.map(([t,zh,id])=>{
-      const is15 = t==='15:00';
-      const zhCell = is15 && diff15 ? diff15.split(' (')[0] : zh;
-      const idCell = is15 && diff15 ? (diff15.match(/\(([^)]+)\)/)||[])[1] || id : id;
+      const isChore = t==='14:30';
+      const zhCell = isChore && diff15 ? diff15.split(' (')[0] : zh;
+      const idCell = isChore && diff15 ? (diff15.match(/\(([^)]+)\)/)||[])[1] || id : id;
       return `<tr><td class="time"><div class="cell" contenteditable="true">${t}</div></td>
         <td><div class="cell" contenteditable="true">${zhCell}</div></td>
         <td class="id-col"><div class="cell" contenteditable="true"><span class="id-text">${idCell}</span></div></td></tr>`;
