@@ -74,12 +74,11 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 
 /* communication cards (指著用,可裁剪) */
 .comm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;}
-.comm-card{border:2px solid var(--mint);border-radius:14px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--mint-pale);}
-.comm-card .emoji{font-size:52px;line-height:1.1;}
-.comm-card .zh{font-size:34px;font-weight:900;margin-top:6px;color:var(--mint-deep);line-height:1.15;}
-.comm-card .q{font-size:17px;color:var(--mint);margin-top:4px;font-weight:700;}
-.comm-card .py{font-size:13px;color:var(--sub);margin-top:6px;}
-.comm-card .id{font-size:18px;font-style:italic;color:var(--mint);margin-top:2px;font-weight:500;}
+.comm-card{border:2px solid var(--mint);border-radius:14px;padding:14px 12px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--mint-pale);}
+.comm-card .emoji{font-size:54px;line-height:1.1;}
+.comm-card .zh{font-size:38px;font-weight:900;margin-top:8px;color:var(--mint-deep);line-height:1.15;}
+.comm-card .py{font-size:15px;color:var(--sub);margin-top:4px;letter-spacing:.02em;}
+.comm-card .id{font-size:22px;font-style:italic;color:var(--mint);margin-top:10px;font-weight:600;padding-top:10px;border-top:1.5px solid var(--line);width:100%;}
 .comm-card .cut-line{margin-top:auto;padding-top:8px;width:100%;border-top:1.5px dashed var(--line);font-size:9px;color:var(--sub);letter-spacing:.05em;}
 
 /* schedule table (一週工作時間表) */
@@ -178,9 +177,10 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 
   /* 溝通小卡:手機改 1 欄,卡片放大好指 */
   .comm-grid{grid-template-columns:1fr;gap:10px;}
-  .comm-card{padding:14px 12px;}
-  .comm-card .emoji{font-size:60px;}
-  .comm-card .zh{font-size:38px;}
+  .comm-card{padding:16px 14px 12px;}
+  .comm-card .emoji{font-size:64px;}
+  .comm-card .zh{font-size:42px;}
+  .comm-card .id{font-size:24px;}
 
   /* 工作時間表:手機字略縮、印尼文欄變窄 */
   .sched-table th,.sched-table td{padding:6px 5px;}
@@ -252,10 +252,9 @@ table.ing td.amt{text-align:right;font-weight:700;white-space:nowrap;width:32%;}
 
   /* 溝通小卡列印:黑白最佳化,邊框加粗,裁切線明顯 */
   .comm-page .comm-card{border:2.5px solid #000;background:#fff;}
-  .comm-page .comm-card .zh{color:#000;font-size:32px;}
-  .comm-page .comm-card .q{color:#000;}
-  .comm-page .comm-card .id{color:#333;}
+  .comm-page .comm-card .zh{color:#000;font-size:34px;}
   .comm-page .comm-card .py{color:#555;}
+  .comm-page .comm-card .id{color:#333;border-top:1.5px solid #999;font-size:20px;}
   .comm-page .comm-card .cut-line{border-top:1.5px dashed #555;color:#555;}
 
   /* 工作時間表列印:黑白最佳化,字放大好讀(一天一頁空間夠) */
@@ -358,8 +357,8 @@ const RECIPES = [
   ['倒入鮮奶到 8 分滿。','Tuang susu segar sampai 80% penuh.'],
   ['外鍋加半杯水,馬克杯放進電鍋(不用蓋盤子)。','Panci luar setengah gelas air. Taruh mug di dalam penanak nasi.'],
   ['蓋上蓋子,按開關,跳起來就好。','Tutup, tekan tombol. Selesai saat tombol naik.'],
-  ['攪拌一下,試溫度,溫溫的才給老人。','Aduk, cek suhu. Berikan saat hangat, jangan terlalu panas.']],
- note:['阿公阿嬤每天早上習慣這樣吃。杯子拿出來很燙,用乾布拿。','Kakek-nenek terbiasa sarapan ini setiap pagi. Mug sangat panas, pakai lap kering.']},
+  ['攪拌一下,試溫度,溫溫的才給老人。拿出來時用濕布拿(很燙)。','Aduk, cek suhu. Berikan saat hangat. Saat mengeluarkan, pegang dengan LAP BASAH (sangat panas).']],
+ note:['阿公阿嬤每天早上習慣這樣吃。馬克杯拿出來很燙,要用濕布拿。','Kakek-nenek terbiasa sarapan ini setiap pagi. Mug sangat panas saat dikeluarkan, pegang dengan LAP BASAH.']},
 
 {key:'danbing', zh:'蛋餅(早餐)', py:'dàn bǐng', id:'Dadar Gulung Telur', cups:0, tags:['早餐'],
  ings:[['eggskin','2 片(或自己調粉漿) / 2 lembar'],['egg','2 顆 / 2 butir'],['scallion','1 根切蔥花'],['oil','1 小匙'],['soy','一點點沾的 / sedikit untuk cocolan']],
@@ -790,16 +789,16 @@ const SCHED_BASE=[
  ['07:00','起床、開窗通風','Bangun, buka jendera'],
  ['07:30','準備早餐(燕麥牛奶或蛋餅)','Siapkan sarapan'],
  ['08:00','早餐時間 + 早上吃藥 💊','Sarapan + obat pagi 💊'],
- ['08:30','收拾餐具 + 掃地拖地','Berishkan piring + sapu & pel lantai'],
+ ['08:30','收拾餐具 + 掃地拖地','Bersihkan piring + sapu & pel lantai'],
  ['09:30','陪長輩散步(請攙扶,慢慢走)','Jalan-jalan dengan lansia (pegangi, pelan-pelan)'],
  ['11:30','準備中餐','Siapkan makan siang'],
  ['12:00','中餐時間 + 中午吃藥 💊','Makan siang + obat siang 💊'],
- ['12:30','收拾餐具','Berishkan piring'],
+ ['12:30','收拾餐具','Bersihkan piring'],
  ['13:00','午休(長輩休息,幫傭可備料)','Istirahat siang (lansia tidur, boleh siapkan bahan)'],
  ['15:00','下午茶點心時間','Waktu camilan sore'],
  ['17:00','準備晚餐','Siapkan makan malam'],
  ['18:00','晚餐時間 + 晚上吃藥 💊','Makan malam + obat malam 💊'],
- ['18:30','收拾餐具、整理廚房','Berishkan piring & dapur'],
+ ['18:30','收拾餐具、整理廚房','Bersihkan piring & dapur'],
  ['20:00','長輩休息時間','Waktu istirahat lansia'],
  ['21:00','睡前吃藥 💊','Obat sebelum tidur 💊'],
  ['21:30','長輩就寢','Lansia tidur'],
@@ -835,9 +834,11 @@ return `
     <div class="cook-card"><div class="t">② 外鍋的水 = 時間</div>
     水越多,煮越久。開關自己會跳起來,不用看時間。<br>
     <span class="id-text">Makin banyak air = makin lama. Tombol akan naik sendiri saat selesai.</span></div>
-    <div class="cook-card"><div class="t">③ 使用步驟</div>
-    外鍋加水 → 放內鍋或盤子 → 蓋蓋子 → 按下開關 → 等跳起來。<br>
-    <span class="id-text">Isi air panci luar → masukkan makanan → tutup → tekan tombol → tunggu tombol naik.</span></div>
+    <div class="cook-card"><div class="t">③ 使用步驟(兩種)</div>
+    <b>煮白飯:</b>外鍋加水 → 放<b>內鍋</b>(直接放,不用蒸架)→ 蓋蓋子 → 按開關。<br>
+    <b>蒸魚/蒸蛋/加熱食物:</b>外鍋加水 → 先放<b>蒸架</b>(鐵架)→ 蒸架上放盤子 → 蓋蓋子 → 按開關。<br>
+    <span class="id-text"><b>Masak nasi:</b> isi air panci luar → taruh <b>panci dalam</b> (langsung, tanpa rak) → tutup → tekan tombol.<br>
+    <b>Mengukus ikan/telur/memanaskan:</b> isi air panci luar → taruh <b>rak pengukus</b> (besi) dulu → taruh piring di atas rak → tutup → tekan tombol.</span></div>
     <div class="cook-card"><div class="t">④ 安全 Keamanan</div>
     開蓋子小心蒸氣,很燙!用乾布拿內鍋。外鍋沒水不可以按開關。<br>
     <span class="id-text">Hati-hati uap panas saat buka tutup! Pakai lap kering. Jangan tekan tombol kalau panci luar kosong.</span></div>
@@ -894,7 +895,6 @@ ${COMM.map((cards,i)=>`
     <div class="comm-card">
       <div class="emoji">${c.e}</div>
       <div class="zh">${c.zh}</div>
-      <div class="q">${c.q}</div>
       <div class="py">${c.py}</div>
       <div class="id">${c.id}</div>
       <div class="cut-line">✂ ─ ─ ─ ─ 沿虛線剪下 / gunting di sini ─ ─ ─</div>
